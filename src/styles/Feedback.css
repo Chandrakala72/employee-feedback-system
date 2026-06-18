@@ -1,0 +1,275 @@
+.feedback-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  padding: 30px;
+}
+
+.feedback-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Header */
+
+.feedback-header {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 28px;
+  padding: 35px;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 25px;
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.25);
+}
+
+.feedback-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 16px;
+  border-radius: 20px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.feedback-title {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.feedback-description {
+  margin-top: 12px;
+  margin-bottom: 0;
+  font-size: 16px;
+  opacity: 0.9;
+  max-width: 650px;
+  margin-inline: auto;
+  line-height: 1.7;
+}
+
+.stats-container {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 10px 18px;
+  border-radius: 12px;
+}
+
+/* Progress */
+
+.progress-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.progress-track {
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  transition: 0.3s;
+}
+
+/* Question Card */
+
+.question-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.question-number {
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.question-title {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.rating-label {
+  font-weight: 600;
+  min-width: 60px;
+}
+
+.stars-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.star-icon {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.comment-section {
+  margin-top: 20px;
+}
+
+.comment-label {
+  font-weight: 600;
+  display: block;
+  color: #6b7280;
+  text-align: left;
+}
+
+.comment-textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  resize: none;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+/* Submit */
+
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 40px;
+  transition: 0.3s;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Success Screen */
+
+.success-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.success-card {
+  background: #fff;
+  padding: 40px;
+  border-radius: 24px;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .feedback-page {
+    padding: 15px;
+  }
+
+  .feedback-header {
+    padding: 25px;
+  }
+
+  .feedback-title {
+    font-size: 32px;
+  }
+
+  .question-card {
+    padding: 18px;
+  }
+
+  .rating-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .progress-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .feedback-page {
+    padding: 10px;
+  }
+
+  .feedback-header {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .feedback-title {
+    font-size: 28px;
+  }
+
+  .feedback-description {
+    font-size: 14px;
+  }
+
+  .question-card {
+    padding: 16px;
+  }
+
+  .stars-container {
+    gap: 6px;
+  }
+
+  .submit-btn {
+    font-size: 15px;
+    padding: 14px;
+  }
+
+  .stats-container {
+    flex-direction: column;
+  }
+
+  .stat-box {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
