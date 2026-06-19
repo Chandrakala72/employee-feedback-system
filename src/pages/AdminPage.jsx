@@ -42,13 +42,27 @@ const Admin = () => {
   };
 
   const copyUrl = async (url, id) => {
-    await navigator.clipboard.writeText(url);
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        // Fallback for http:// or older browsers without Clipboard API
+        const textArea = document.createElement("textarea");
+        textArea.value = url;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
 
-    setCopiedId(id);
-
-    setTimeout(() => {
-      setCopiedId(null);
-    }, 2000);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy URL:", err);
+    }
   };
 
   return (
