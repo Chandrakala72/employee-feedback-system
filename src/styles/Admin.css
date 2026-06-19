@@ -1,19 +1,21 @@
+/* =========================
+   PAGE LAYOUT
+========================= */
+
 .admin-page {
   min-height: 100vh;
   background: #f4f7fb;
   padding: 20px;
 }
 
-@media (max-width: 480px) {
-  .admin-page {
-    padding: 12px;
-  }
-}
-
 .container {
   max-width: 1100px;
   margin: auto;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 .admin-header {
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
@@ -24,11 +26,18 @@
   margin-bottom: 25px;
 }
 
-@media (max-width: 480px) {
-  .admin-header {
-    padding: 20px;
-    border-radius: 20px;
-  }
+.admin-title {
+  margin: 0;
+  color: white;
+  font-size: clamp(32px, 6vw, 48px);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.admin-header p {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .header-icon {
@@ -43,14 +52,6 @@
   font-size: 30px;
 }
 
-@media (max-width: 480px) {
-  .header-icon {
-    width: 60px;
-    height: 60px;
-    font-size: 22px;
-  }
-}
-
 .header-tag {
   margin-top: 15px;
   display: inline-block;
@@ -59,10 +60,9 @@
   border-radius: 20px;
 }
 
-.admin-header h1 {
-  margin-top: 15px;
-  font-size: clamp(28px, 5vw, 42px);
-}
+/* =========================
+   STATS
+========================= */
 
 .stats {
   margin-top: 25px;
@@ -78,19 +78,12 @@
   border-radius: 12px;
 }
 
-@media (max-width: 480px) {
-  .stats {
-    flex-direction: column;
-  }
-
-  .stat-card {
-    width: 100%;
-    box-sizing: border-box;
-  }
-}
+/* =========================
+   CREATE BUTTON
+========================= */
 
 .feedback-button {
-  margin: 25px;
+  margin: 25px 0;
   display: flex;
   justify-content: flex-end;
 }
@@ -103,6 +96,7 @@
   padding: 14px 20px;
   cursor: pointer;
   display: flex;
+  align-items: center;
   gap: 10px;
   font-size: 16px;
   font-weight: 700;
@@ -110,18 +104,14 @@
   transition: all 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .feedback-button {
-    justify-content: center;
-    margin: 15px 0;
-  }
-
-  .feedback-button button {
-    width: 100%;
-    max-width: 320px;
-    justify-content: center;
-  }
+.feedback-button button:hover {
+  transform: translateY(-2px);
 }
+
+/* =========================
+   EMPLOYEE CARD
+========================= */
+
 .employee-card {
   background: white;
   border-radius: 18px;
@@ -130,22 +120,9 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-@media (max-width: 480px) {
-  .employee-card {
-    padding: 14px;
-  }
-}
-
 .employee-row {
   display: flex;
   gap: 12px;
-}
-
-.employee-row input {
-  flex: 1;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
 }
 
 .employee-row button {
@@ -154,69 +131,16 @@
   border: none;
   border-radius: 12px;
   padding: 0 20px;
-}
-
-.url-box {
-  margin-top: 15px;
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 12px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.url-box a {
-  flex: 1;
-  color: #2563eb;
-  word-break: break-all;
-}
-
-@media (max-width: 480px) {
-  .url-box {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .url-box a {
-    width: 100%;
-    text-align: left;
-  }
-
-  .copy-btn {
-    align-self: flex-end;
-  }
-}
-
-.copy-btn {
   cursor: pointer;
 }
 
-.admin-title {
-  font-size: clamp(32px, 6vw, 48px);
-  color: white;
-  gap: 25px;
+.employee-row button:hover {
+  opacity: 0.95;
 }
 
-@media (max-width: 768px) {
-  .employee-row {
-    flex-direction: column;
-  }
-
-  .employee-row button {
-    width: 100%;
-    height: 50px;
-  }
-
-  .url-box {
-    flex-wrap: wrap;
-  }
-
-  .feedback-button {
-    display: flex;
-    justify-content: end;
-  }
-}
+/* =========================
+   INPUT
+========================= */
 
 .input-wrapper {
   position: relative;
@@ -251,37 +175,32 @@
   box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
 }
 
-/* Tablet */
-@media (max-width: 768px) {
-  .input-wrapper input {
-    padding: 13px 13px 13px 42px;
-    font-size: 14px;
-  }
+/* =========================
+   URL BOX
+========================= */
 
-  .input-icon {
-    left: 14px;
-    font-size: 15px;
-  }
+.url-box {
+  margin-top: 15px;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* Mobile */
-@media (max-width: 480px) {
-  .input-wrapper {
-    width: 100%;
-  }
-
-  .input-wrapper input {
-    width: 100%;
-    padding: 12px 12px 12px 40px;
-    font-size: 14px;
-    min-height: 48px;
-  }
-
-  .input-icon {
-    left: 12px;
-    font-size: 14px;
-  }
+.url-box a {
+  flex: 1;
+  color: #2563eb;
+  text-decoration: none;
+  word-break: break-all;
+  font-size: 14px;
 }
+
+/* =========================
+   COPY BUTTON
+========================= */
+
 .copy-btn {
   position: relative;
   cursor: pointer;
@@ -290,6 +209,7 @@
   justify-content: center;
   min-width: 36px;
   min-height: 36px;
+  flex-shrink: 0;
 }
 
 .tooltip {
@@ -315,7 +235,6 @@
   visibility: visible;
 }
 
-/* Arrow */
 .tooltip::after {
   content: "";
   position: absolute;
@@ -327,16 +246,163 @@
   border-color: #111827 transparent transparent transparent;
 }
 
-/* Tablet */
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty-state {
+  background: #fff;
+  border-radius: 20px;
+  padding: 50px 30px;
+  text-align: center;
+  margin-top: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+  font-size: 35px;
+  color: #4f46e5;
+  margin-bottom: 20px;
+}
+
+.empty-state h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.empty-state p {
+  margin-top: 12px;
+  color: #6b7280;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* =========================
+   TABLET
+========================= */
+
 @media (max-width: 768px) {
+  .feedback-button {
+    justify-content: center;
+  }
+
+  .feedback-button button {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+  }
+
+  .employee-row {
+    flex-direction: column;
+  }
+
+  .employee-row button {
+    width: 100%;
+    height: 50px;
+  }
+
+  .input-wrapper input {
+    padding: 13px 13px 13px 42px;
+    font-size: 14px;
+  }
+
+  .input-icon {
+    left: 14px;
+    font-size: 15px;
+  }
+
   .tooltip {
     font-size: 11px;
     padding: 5px 8px;
   }
+
+  .empty-state {
+    padding: 35px 20px;
+  }
+
+  .empty-icon {
+    font-size: 30px;
+  }
+
+  .empty-state h2 {
+    font-size: 20px;
+  }
 }
 
-/* Mobile */
+/* =========================
+   MOBILE
+========================= */
+
 @media (max-width: 480px) {
+  .admin-page {
+    padding: 12px;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .admin-header {
+    padding: 24px 16px;
+    border-radius: 20px;
+  }
+
+  .admin-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .admin-header p {
+    font-size: 14px;
+  }
+
+  .header-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 22px;
+  }
+
+  .feedback-button {
+    margin: 16px 0;
+  }
+
+  .feedback-button button {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .employee-card {
+    padding: 14px;
+  }
+
+  .input-wrapper input {
+    padding: 12px 12px 12px 40px;
+    font-size: 14px;
+    min-height: 48px;
+  }
+
+  .input-icon {
+    left: 12px;
+    font-size: 14px;
+  }
+
+  .url-box a {
+    font-size: 12px;
+  }
+
+  .copy-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
   .tooltip {
     bottom: 115%;
     font-size: 10px;
@@ -346,16 +412,19 @@
     text-align: center;
   }
 
-  .copy-btn {
-    min-width: 44px;
-    min-height: 44px; /* better touch target */
+  .empty-state {
+    padding: 25px 15px;
   }
-}
 
-.feedback-button button:hover {
-  transform: translateY(-2px);
-}
+  .empty-icon {
+    font-size: 25px;
+  }
 
-.employee-row button:hover {
-  opacity: 0.95;
+  .empty-state h2 {
+    font-size: 18px;
+  }
+
+  .empty-state p {
+    font-size: 13px;
+  }
 }

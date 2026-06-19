@@ -59,12 +59,25 @@ const Admin = () => {
 
           <p>Create and manage personalized feedback links for employees.</p>
         </div>
+        {/* Feedback Button */}
         <div className="feedback-button">
           <button onClick={addEmployee}>
             <FaPlus />
             Create Feedback Link
           </button>
         </div>
+        {/* Empty State */}
+        {employees.length === 0 && (
+          <div className="empty-state">
+            <FaLink className="empty-icon" />
+
+            <p>
+              Click the <strong>Create Feedback Link</strong> button above to
+              generate a personalized feedback form URL for an employee.
+            </p>
+          </div>
+        )}
+        {/* Employee Cards */}
         {employees.map((employee) => (
           <div key={employee.id} className="employee-card">
             <div className="employee-row">
