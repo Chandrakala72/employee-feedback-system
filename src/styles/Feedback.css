@@ -1,7 +1,11 @@
+/* =========================
+   FEEDBACK PAGE
+========================= */
+
 .feedback-page {
   min-height: 100vh;
   background: #f4f7fb;
-  padding: 30px;
+  padding: 30px 15px;
 }
 
 .feedback-container {
@@ -9,7 +13,9 @@
   margin: 0 auto;
 }
 
-/* Header */
+/* =========================
+   HEADER
+========================= */
 
 .feedback-header {
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
@@ -42,13 +48,16 @@
 
 .feedback-description {
   margin-top: 12px;
-  margin-bottom: 0;
   font-size: 16px;
   opacity: 0.9;
   max-width: 650px;
   margin-inline: auto;
   line-height: 1.7;
 }
+
+/* =========================
+   STATS
+========================= */
 
 .stats-container {
   margin-top: 25px;
@@ -64,7 +73,9 @@
   border-radius: 12px;
 }
 
-/* Progress */
+/* =========================
+   PROGRESS
+========================= */
 
 .progress-card {
   background: #fff;
@@ -90,10 +101,12 @@
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #4f46e5, #7c3aed);
-  transition: 0.3s;
+  transition: width 0.3s ease;
 }
 
-/* Question Card */
+/* =========================
+   QUESTION CARD
+========================= */
 
 .question-card {
   background: #fff;
@@ -114,7 +127,12 @@
   margin-top: 5px;
   margin-bottom: 20px;
   text-align: left;
+  color: #111827;
 }
+
+/* =========================
+   RATING
+========================= */
 
 .rating-section {
   display: flex;
@@ -136,16 +154,24 @@
 
 .star-icon {
   cursor: pointer;
-  transition: 0.2s;
+  transition: transform 0.2s ease;
 }
+
+.star-icon:hover {
+  transform: scale(1.1);
+}
+
+/* =========================
+   COMMENT
+========================= */
 
 .comment-section {
   margin-top: 20px;
 }
 
 .comment-label {
-  font-weight: 600;
   display: block;
+  font-weight: 600;
   color: #6b7280;
   text-align: left;
 }
@@ -161,7 +187,15 @@
   box-sizing: border-box;
 }
 
-/* Submit */
+.comment-textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* =========================
+   SUBMIT BUTTON
+========================= */
 
 .submit-btn {
   width: 100%;
@@ -175,14 +209,16 @@
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 40px;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .submit-btn:hover {
   transform: translateY(-2px);
 }
 
-/* Success Screen */
+/* =========================
+   SUCCESS PAGE
+========================= */
 
 .success-page {
   min-height: 100vh;
@@ -203,7 +239,9 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Responsive */
+/* =========================
+   TABLET
+========================= */
 
 @media (max-width: 768px) {
   .feedback-page {
@@ -231,37 +269,39 @@
     flex-direction: column;
     gap: 8px;
   }
+
+  .stats-container {
+    gap: 10px;
+  }
 }
+
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 480px) {
   .feedback-page {
-    padding: 10px;
+    padding: 12px;
   }
 
   .feedback-header {
-    padding: 20px;
+    padding: 20px 16px;
     border-radius: 20px;
   }
 
   .feedback-title {
     font-size: 28px;
+    line-height: 1.2;
   }
 
   .feedback-description {
     font-size: 14px;
+    line-height: 1.5;
   }
 
-  .question-card {
-    padding: 16px;
-  }
-
-  .stars-container {
-    gap: 6px;
-  }
-
-  .submit-btn {
-    font-size: 15px;
-    padding: 14px;
+  .feedback-badge {
+    font-size: 13px;
+    padding: 6px 12px;
   }
 
   .stats-container {
@@ -271,5 +311,35 @@
   .stat-box {
     width: 100%;
     box-sizing: border-box;
+  }
+
+  .question-card {
+    padding: 16px;
+  }
+
+  .question-title {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .rating-section {
+    gap: 10px;
+  }
+
+  .stars-container {
+    gap: 6px;
+  }
+
+  .comment-textarea {
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    padding: 14px;
+    font-size: 15px;
+  }
+
+  .success-card {
+    padding: 25px;
   }
 }
