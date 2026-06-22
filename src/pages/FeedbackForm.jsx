@@ -1,132 +1,116 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { FaStar, FaCheckCircle } from "react-icons/fa";
-import "../styles/Feedback.css";
 import axios from "axios";
+import logo from "../assets/logo.png";
+import "../styles/Feedback.css";
 
-const FeedbackForm = () => {
-  const { employeeName } = useParams();
+const QUESTIONS = [
+  "How effectively does this employee communicate complex concepts to non-technical stakeholders?",
+  "How well does this employee collaborate with cross-functional teams and contribute to a positive environment?",
+  "Rate this employee's ability to independently solve problems and make sound decisions under pressure.",
+  "How consistently does this employee meet deadlines and manage multiple competing priorities?",
+  "Overall, how would you rate this employee's performance and potential for growth within the organisation?",
+];
 
-  const decodedEmployeeName = atob(employeeName);
-
-  const [submitted, setSubmitted] = useState(false);
-
-  const [questions, setQuestions] = useState([
-    {
-      question: "Communication Skills",
-      rating: 0,
-      comments: "",
-    },
-    {
-      question: "Team Collaboration",
-      rating: 0,
-      comments: "",
-    },
-    {
-      question: "Technical Skills",
-      rating: 0,
-      comments: "",
-    },
-    {
-      question: "Problem Solving",
-      rating: 0,
-      comments: "",
-    },
-    {
-      question: "Overall Performance",
-      rating: 0,
-      comments: "",
-    },
-  ]);
-
-  const updateRating = (index, rating) => {
-    const updated = [...questions];
-    updated[index].rating = rating;
-    setQuestions(updated);
-  };
-
-  const updateComment = (index, comments) => {
-    const updated = [...questions];
-    updated[index].comments = comments;
-    setQuestions(updated);
-  };
-
-  const completedCount = questions.filter(
-    (q) => q.rating > 0 && q.comments.trim() !== "",
-  ).length;
-
-  const progress = (completedCount / questions.length) * 100;
-
-  const validateForm = () => {
-    const invalid = questions.some(
-      (q) => q.rating === 0 || q.comments.trim() === "",
-    );
-
-    if (invalid) {
-      alert("Please complete all ratings and comments before submitting.");
-      return false;
+function AutoTextarea({ value, onChange, placeholder }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.height = "auto";
+      ref.current.style.height = ref.current.scrollHeight + "px";
     }
+  }, [value]);
 
-    return true;
+  return (
+    <textarea
+      ref={ref}
+      className="fb-ta"
+      rows={1}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+    />
+  );
+}
+
+export default function FeedbackForm() {
+  const { employeeName } = useParams();
+  const name = atob(employeeName);
+
+  const [ratings, setRatings] = useState(Array(QUESTIONS.length).fill(0));
+  const [comments, setComments] = useState(Array(QUESTIONS.length).fill(""));
+  const [submitted, setSubmitted] = useState(false);
+  const [showErr, setShowErr] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const setRating = (i, n) => {
+    const r = [...ratings];
+    r[i] = n;
+    setRatings(r);
   };
+  const setComment = (i, v) => {
+    const c = [...comments];
+    c[i] = v;
+    setComments(c);
+  };
+
+  const completedCount = ratings.filter((r, i) => r > 0).length;
+  const allDone = completedCount === QUESTIONS.length;
 
   const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    const payload = {
-      name: decodedEmployeeName,
-      responses: questions,
-    };
-
+    if (!allDone) {
+      setShowErr(true);
+      return;
+    }
+    setLoading(true);
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         "https://67eiryoroz2cafkng73dquuho40csyhq.lambda-url.us-west-2.on.aws/",
-        payload,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          name,
+          responses: QUESTIONS.map((q, i) => ({
+            question: q,
+            rating: ratings[i],
+            comments: comments[i],
+          })),
         },
       );
-
-      console.log("Response:", response, response.data);
-
       const result =
-        typeof response.data.body === "string"
-          ? JSON.parse(response.data.body)
-          : response.data;
-
-      if (result.success) {
-        setSubmitted(true);
-      } else {
-        throw new Error(result.error || "Failed to submit feedback");
-      }
-    } catch (error) {
-      throw new Error(error.response?.data?.error || "Failed to send feedback");
+        typeof res.data.body === "string"
+          ? JSON.parse(res.data.body)
+          : res.data;
+      if (result.success) setSubmitted(true);
+      else throw new Error("Failed");
+    } catch {
+      alert("Failed to send feedback.");
+    } finally {
+      setLoading(false);
     }
   };
 
   if (submitted) {
     return (
-      <div className="success-page">
+      <div className="fb-page">
         <div className="success-card">
-          <FaCheckCircle size={80} color="#10b981" />
-
-          <h2
-            style={{
-              marginTop: "20px",
-            }}
-          >
-            Thank You!
-          </h2>
-
-          <p
-            style={{
-              color: "#6b7280",
-            }}
-          >
-            Your feedback for <strong>{decodedEmployeeName}</strong> has been
-            submitted successfully.
+          <div className="s-ring">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#4caf50"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <p className="s-title">Feedback submitted</p>
+          <p className="s-msg">
+            Your Feedbacks for <strong>{name}</strong>
+            <br />
+            has been recorded successfully.
           </p>
         </div>
       </div>
@@ -134,123 +118,77 @@ const FeedbackForm = () => {
   }
 
   return (
-    <div className="feedback-page">
-      <div className="feedback-container">
-        {/* Header */}
-        <div className="feedback-header">
-          <div className="feedback-badge">Employee Feedback</div>
-
-          <h1 className="feedback-title">{decodedEmployeeName}</h1>
-
-          <p className="feedback-description">
-            Your feedback helps us recognize strengths, celebrate achievements,
-            and identify opportunities for growth.
-          </p>
-
-          <div className="stats-container">
-            <div className="stat-box">
-              <div
-                style={{
-                  fontSize: "12px",
-                  opacity: 0.8,
-                }}
-              >
-                Questions
-              </div>
-
-              <div
-                style={{
-                  fontWeight: "700",
-                  fontSize: "18px",
-                }}
-              >
-                5
-              </div>
-            </div>
-
-            <div className="stat-box">
-              <div
-                style={{
-                  fontSize: "12px",
-                  opacity: 0.8,
-                }}
-              >
-                Estimated Time
-              </div>
-
-              <div
-                style={{
-                  fontWeight: "700",
-                  fontSize: "18px",
-                }}
-              >
-                2 mins
-              </div>
-            </div>
-          </div>
+    <div className="fb-page">
+      <div className="fb-inner">
+        {/* Banner */}
+        <div className="banner">
+          <img src={logo} alt="TechNerds" className="company-logo" />
+          <div className="employee-name">Employee Feedback for {name}</div>
         </div>
 
-        {/* Progress */}
-        <div className="progress-card">
-          <div className="progress-header">
-            <span>Progress</span>
-
-            <span>{completedCount}/5 Completed</span>
-          </div>
-
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{
-                width: `${progress}%`,
-              }}
-            />
-          </div>
+        <div className="fb-grid">
+          {QUESTIONS.map((q, i) => {
+            const done = ratings[i] > 0;
+            return (
+              <div key={i} className={`fb-card${done ? " done" : ""}`}>
+                {/* Question Section */}
+                <div className="q-head">
+                  <span className="q-text">{q}</span>
+                </div>
+                {/* Comments Section */}
+                <div className="feedback-row">
+                  <div className="comment-container">
+                    <AutoTextarea
+                      value={comments[i]}
+                      onChange={(e) => setComment(i, e.target.value)}
+                      placeholder="Share your thoughts…"
+                    />
+                  </div>
+                  {/* Rating Section */}
+                  <div
+                    className="stars"
+                    role="group"
+                    aria-label={`Rate question ${i + 1}`}
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <span
+                        key={n}
+                        className={`star${n <= ratings[i] ? " on" : ""}`}
+                        onClick={() => setRating(i, n)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${n} star`}
+                        onKeyDown={(e) =>
+                          (e.key === "Enter" || e.key === " ") &&
+                          setRating(i, n)
+                        }
+                      >
+                        ⭐
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Questions */}
-        {questions.map((item, index) => (
-          <div key={index} className="question-card">
-            <div className="question-number">Question {index + 1} of 5</div>
-
-            <h3 className="question-title">{item.question}</h3>
-
-            <div className="rating-section">
-              <label className="rating-label">Rating:</label>
-
-              <div className="stars-container">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <FaStar
-                    key={star}
-                    size={32}
-                    className="star-icon"
-                    color={star <= item.rating ? "#fbbf24" : "#d1d5db"}
-                    onClick={() => updateRating(index, star)}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="comment-section">
-              <label className="comment-label">Comments</label>
-
-              <textarea
-                rows="4"
-                className="comment-textarea"
-                placeholder="Share your feedback..."
-                value={item.comments}
-                onChange={(e) => updateComment(index, e.target.value)}
-              />
-            </div>
-          </div>
-        ))}
-
-        <button onClick={handleSubmit} className="submit-btn">
-          Submit Feedback
-        </button>
+        {/* Validation Message */}
+        <div className="fb-footer">
+          {showErr && !allDone && (
+            <span className="fb-err">
+              Please complete all sections before submitting.
+            </span>
+          )}
+          <button
+            className="sub-btn"
+            onClick={handleSubmit}
+            disabled={!allDone || loading}
+          >
+            {loading ? "Submitting…" : "Submit evaluation"}
+          </button>
+        </div>
       </div>
     </div>
   );
-};
-
-export default FeedbackForm;
+}
