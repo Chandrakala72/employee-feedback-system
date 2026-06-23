@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Admin from "./pages/AdminPage";
 import FeedbackForm from "./pages/FeedbackForm";
+import FeedbackUrlGenerator from "./pages/FeedbackUrlGenerator";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Admin Page */}
-        <Route path="/" element={<Admin />} />
+        {/* Feedback URL Generator Screen */}
+        <Route path="/" element={<FeedbackUrlGenerator />} />
         {/* Feedback Form */}
         <Route path="/feedback/:employeeName" element={<FeedbackForm />} />
       </Routes>

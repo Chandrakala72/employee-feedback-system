@@ -8,7 +8,7 @@ export const styles = {
     minHeight: "100%",
     background:
       "radial-gradient(1200px 500px at 50% -10%, #dce6f0 0%, #edf1f7 55%)",
-    padding: "32px 16px 56px",
+    padding: "10px 16px 56px",
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
     color: "#16181d",

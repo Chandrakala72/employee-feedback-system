@@ -8,6 +8,7 @@ import { Field } from "../components/Field";
 import { C, DIMENSIONS } from "../global/constants";
 import { Divider } from "../components/Divider";
 import { currentPeriod } from "../global/common";
+import myLogo from "../assets/logo.png";
 
 export default function FeedbackForm({ onSubmit }) {
   const [submitted, setSubmitted] = useState(false);
@@ -87,6 +88,18 @@ export default function FeedbackForm({ onSubmit }) {
     <div style={styles.shell}>
       <StyleTag />
       {/* header */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          margin: 0,
+        }}
+      >
+        <div>
+          <img src={myLogo} alt="Company Logo" width={120} />
+        </div>
+      </div>
+
       <div style={styles.frame}>
         <header style={styles.header}>
           <div style={styles.brandRow}>
