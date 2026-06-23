@@ -1,194 +1,199 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import logo from "../assets/logo.png";
-import "../styles/Feedback.css";
+import { styles } from "../styles/FeedbackStyles";
+import { RatingRow } from "../components/RatingRow";
+import { ThankYou } from "../components/ThankYou";
+import { SectionLabel } from "../components/SectionLabel";
+import { Field } from "../components/Field";
+import { C, DIMENSIONS } from "../global/constants";
+import { Divider } from "../components/Divider";
+import { currentPeriod } from "../global/common";
 
-const QUESTIONS = [
-  "How effectively does this employee communicate complex concepts to non-technical stakeholders?",
-  "How well does this employee collaborate with cross-functional teams and contribute to a positive environment?",
-  "Rate this employee's ability to independently solve problems and make sound decisions under pressure.",
-  "How consistently does this employee meet deadlines and manage multiple competing priorities?",
-  "Overall, how would you rate this employee's performance and potential for growth within the organisation?",
-];
-
-function AutoTextarea({ value, onChange, placeholder }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.style.height = "auto";
-      ref.current.style.height = ref.current.scrollHeight + "px";
-    }
-  }, [value]);
-
-  return (
-    <textarea
-      ref={ref}
-      className="fb-ta"
-      rows={1}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-    />
-  );
-}
-
-export default function FeedbackForm() {
+export default function FeedbackForm({ onSubmit }) {
+  const [submitted, setSubmitted] = useState(false);
+  const [touched, setTouched] = useState(false);
   const { employeeName } = useParams();
   const name = atob(employeeName);
 
-  const [ratings, setRatings] = useState(Array(QUESTIONS.length).fill(0));
-  const [comments, setComments] = useState(Array(QUESTIONS.length).fill(""));
-  const [submitted, setSubmitted] = useState(false);
-  const [showErr, setShowErr] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [consultant, setConsultant] = useState("");
+  const [project, setProject] = useState("");
+  const [period, setPeriod] = useState(currentPeriod());
+  const [ratings, setRatings] = useState({});
+  const [cont, setCont] = useState("");
+  const [wins, setWins] = useState("");
+  const [improve, setImprove] = useState("");
+  const [reviewer, setReviewer] = useState("");
 
-  const setRating = (i, n) => {
-    const r = [...ratings];
-    r[i] = n;
-    setRatings(r);
-  };
-  const setComment = (i, v) => {
-    const c = [...comments];
-    c[i] = v;
-    setComments(c);
-  };
+  const nameRef = useRef(null);
+  const ratingsRef = useRef(null);
 
-  const completedCount = ratings.filter((r, i) => r > 0).length;
-  const allDone = completedCount === QUESTIONS.length;
+  const ratedCount = Object.values(ratings).filter(Boolean).length;
+  const progress = useMemo(() => {
+    let p = 0;
+    if (consultant.trim()) p += 18;
+    p += Math.min(ratedCount, DIMENSIONS.length) * (52 / DIMENSIONS.length);
+    if (cont) p += 12;
+    if (wins.trim() || improve.trim()) p += 12;
+    if (submitted) p = 100;
+    return Math.min(Math.round(p), 100);
+  }, [consultant, ratedCount, cont, wins, improve, submitted]);
 
-  const handleSubmit = async () => {
-    if (!allDone) {
-      setShowErr(true);
+  const nameValid = consultant.trim().length > 0;
+  const overallValid = !!ratings.overall;
+
+  function submit() {
+    if (!nameValid || !overallValid) {
+      setTouched(true);
+      const target = !nameValid ? nameRef.current : ratingsRef.current;
+      if (target)
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    setLoading(true);
-    try {
-      const res = await axios.post(
-        "https://67eiryoroz2cafkng73dquuho40csyhq.lambda-url.us-west-2.on.aws/",
-        {
-          name,
-          responses: QUESTIONS.map((q, i) => ({
-            question: q,
-            rating: ratings[i],
-            comments: comments[i],
-          })),
-        },
-      );
-      const result =
-        typeof res.data.body === "string"
-          ? JSON.parse(res.data.body)
-          : res.data;
-      if (result.success) setSubmitted(true);
-      else throw new Error("Failed");
-    } catch {
-      alert("Failed to send feedback.");
-    } finally {
-      setLoading(false);
+    const payload = {
+      consultant: consultant.trim(),
+      project: project.trim(),
+      period,
+      ratings,
+      continueEngagement: cont,
+      goingWell: wins.trim(),
+      couldImprove: improve.trim(),
+      reviewer: reviewer.trim(),
+      submittedAt: new Date().toISOString(),
+    };
+    if (typeof onSubmit === "function") {
+      try {
+        onSubmit(payload);
+      } catch (e) {
+        /* swallow in demo */
+      }
     }
-  };
+    setSubmitted(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
-  if (submitted) {
-    return (
-      <div className="fb-page">
-        <div className="success-card">
-          <div className="s-ring">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#4caf50"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-          <p className="s-title">Feedback submitted</p>
-          <p className="s-msg">
-            Your Feedbacks for <strong>{name}</strong>
-            <br />
-            has been recorded successfully.
-          </p>
-        </div>
-      </div>
-    );
+  function reset() {
+    setSubmitted(false);
+    setTouched(false);
+    setConsultant("");
+    setProject("");
+    setRatings({});
+    setCont("");
+    setWins("");
+    setImprove("");
+    setReviewer("");
   }
 
   return (
-    <div className="fb-page">
-      <div className="fb-inner">
-        {/* Banner */}
-        <div className="banner">
-          <img src={logo} alt="TechNerds" className="company-logo" />
-          <div className="employee-name">Employee Feedback for {name}</div>
-        </div>
+    <div style={styles.shell}>
+      <StyleTag />
+      {/* header */}
+      <div style={styles.frame}>
+        <header style={styles.header}>
+          <div style={styles.brandRow}>
+            <span style={styles.brandDot} />
+            <span style={styles.brandName}> Feedback for {name} </span>
+          </div>
+          {!submitted && <span style={styles.periodChip}>{period}</span>}
+        </header>
 
-        <div className="fb-grid">
-          {QUESTIONS.map((q, i) => {
-            const done = ratings[i] > 0;
-            return (
-              <div key={i} className={`fb-card${done ? " done" : ""}`}>
-                {/* Question Section */}
-                <div className="q-head">
-                  <span className="q-text">{q}</span>
-                </div>
-                {/* Comments Section */}
-                <div className="feedback-row">
-                  <div className="comment-container">
-                    <AutoTextarea
-                      value={comments[i]}
-                      onChange={(e) => setComment(i, e.target.value)}
-                      placeholder="Share your thoughts…"
+        <div style={styles.card} className="fade-in">
+          {/* Thank You */}
+          {submitted ? (
+            <ThankYou consultant={consultant} onReset={reset} />
+          ) : (
+            // Feedback Form
+            <>
+              <h1 style={styles.title}>Share your feedback</h1>
+              <p style={styles.sub}>
+                Takes about two minutes. Your answers stay between you and
+                Technerds — the employee won't see who said what.
+              </p>
+
+              {/* Ratings */}
+              <div ref={ratingsRef}>
+                <SectionLabel n="1" title="Ratings" caption={""} />
+                <div style={styles.ratingList}>
+                  {DIMENSIONS.map((d, i) => (
+                    <RatingRow
+                      key={d.key}
+                      dim={d}
+                      value={ratings[d.key]}
+                      last={i === DIMENSIONS.length - 1}
+                      showError={touched && d.required && !ratings[d.key]}
+                      onChange={(v) =>
+                        setRatings((r) => ({ ...r, [d.key]: v }))
+                      }
                     />
-                  </div>
-                  {/* Rating Section */}
-                  <div
-                    className="stars"
-                    role="group"
-                    aria-label={`Rate question ${i + 1}`}
-                  >
-                    {[1, 2, 3, 4, 5].map((n) => (
-                      <span
-                        key={n}
-                        className={`star${n <= ratings[i] ? " on" : ""}`}
-                        onClick={() => setRating(i, n)}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={`${n} star`}
-                        onKeyDown={(e) =>
-                          (e.key === "Enter" || e.key === " ") &&
-                          setRating(i, n)
-                        }
-                      >
-                        ⭐
-                      </span>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               </div>
-            );
-          })}
-        </div>
 
-        {/* Validation Message */}
-        <div className="fb-footer">
-          {showErr && !allDone && (
-            <span className="fb-err">
-              Please complete all sections before submitting.
-            </span>
+              <Divider />
+
+              {/* Comments */}
+              <SectionLabel
+                n="2"
+                title="In your words"
+                caption="Optional, but the most useful part"
+              />
+
+              {/* Comments */}
+              <Field label="What's going well?">
+                <textarea
+                  style={styles.textarea}
+                  value={wins}
+                  onChange={(e) => setWins(e.target.value)}
+                  placeholder="Strengths, standout moments, things to keep doing…"
+                  rows={3}
+                />
+              </Field>
+              <Field label="What could be better?">
+                <textarea
+                  style={styles.textarea}
+                  value={improve}
+                  onChange={(e) => setImprove(e.target.value)}
+                  placeholder="Anything that would make the engagement smoother…"
+                  rows={3}
+                />
+              </Field>
+
+              {/* Send Feedback Button */}
+              <button
+                type="button"
+                className="btn"
+                style={styles.btn}
+                onClick={submit}
+              >
+                Send feedback
+              </button>
+            </>
           )}
-          <button
-            className="sub-btn"
-            onClick={handleSubmit}
-            disabled={!allDone || loading}
-          >
-            {loading ? "Submitting…" : "Submit evaluation"}
-          </button>
         </div>
       </div>
     </div>
+  );
+}
+
+function StyleTag() {
+  return (
+    <style>{`
+      .fade-in { animation: fadeIn .35s ease both; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      .pop-in { animation: popIn .45s cubic-bezier(.2,.9,.3,1.3) both; }
+      @keyframes popIn { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
+      .btn:hover { background: ${C.brandDeep} !important; }
+      .btn:active { transform: translateY(1px); }
+      .btn-ghost:hover { color: ${C.ink} !important; border-color: ${C.muted} !important; }
+      .scale-btn:hover { border-color: ${C.brandLine}; }
+      .chip:hover { border-color: ${C.brandLine} !important; }
+      input:focus, textarea:focus { outline: none; border-color: ${C.brand} !important; box-shadow: 0 0 0 3px ${C.brandSoft}; }
+      button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid ${C.brand}; outline-offset: 2px; }
+      textarea { resize: vertical; }
+      ::placeholder { color: #9aa3b2; }
+      @media (prefers-reduced-motion: reduce) {
+        .fade-in, .pop-in { animation: none !important; }
+        * { transition: none !important; }
+      }
+    `}</style>
   );
 }

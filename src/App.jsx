@@ -1,16 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Admin from "./pages/AdminPage";
-import Feedback from "./pages/FeedbackForm";
+import FeedbackForm from "./pages/FeedbackForm";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Admin Page */}
         <Route path="/" element={<Admin />} />
-        <Route
-          path="/feedback/:employeeName"
-          element={<Feedback />}
-        />
+        {/* Feedback Form */}
+        <Route path="/feedback/:employeeName" element={<FeedbackForm />} />
       </Routes>
     </BrowserRouter>
   );
