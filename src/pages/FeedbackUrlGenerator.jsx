@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import myLogo from "../assets/logo.png";
 import { styles } from "../styles/FeedbackURLGeneratorStyles";
+import { saveLink, listLinks, deactivateLink } from "../services/feedbackApi";
 
 const MONTHS = [
   "January",
@@ -44,7 +45,51 @@ export default function FeedbackUrlGenerator() {
   const [btnActive, setBtnActive] = useState(false);
   const [focusField, setFocusField] = useState(null);
   const [history, setHistory] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
   const [showAdd, setShowAdd] = useState(false);
+  const [generating, setGenerating] = useState(false);
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  async function loadHistory() {
+    try {
+      setLoadingHistory(true);
+
+      const res = await listLinks({
+        page: 1,
+        limit: 100,
+      });
+
+      const formattedHistory = res.data.map((link) => ({
+        id: link.id,
+        employeeName: link.employee_name,
+        reviewerName: link.reviewer_name,
+        projectName: link.project_name,
+        month: link.period_month,
+        year: link.period_year,
+        url: `${window.location.origin}/feedback/${link.id}`,
+      }));
+
+      setHistory(formattedHistory);
+    } catch (err) {
+      console.error("Failed to load history:", err);
+    } finally {
+      setLoadingHistory(false);
+    }
+  }
+
+  async function handleDelete(id) {
+    try {
+      await deactivateLink(id);
+
+      setHistory((prev) => prev.filter((h) => h.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   // Handle Validation
   const validate = () => {
@@ -56,36 +101,51 @@ export default function FeedbackUrlGenerator() {
   };
 
   // Handle Generate URL
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     const e = validate();
+
     if (Object.keys(e).length) {
       setErrors(e);
       return;
     }
-    setErrors({});
-    const slug = btoa(
-      [
-        reviewerName.trim(),
-        employeeName.trim(),
-        projectName.trim(),
-        month,
-        year,
-      ].join("|"),
-    );
-    const url = `${window.location.origin}/feedback/${slug}`;
-    setGeneratedUrl(url);
-    setHistory((prev) => [
-      {
-        reviewerName,
-        projectName,
+
+    try {
+      setErrors({});
+      setGenerating(true);
+
+      const response = await saveLink({
+        reviewName: reviewerName,
         employeeName,
+        projectName,
+        reviewerName,
         month,
         year,
-        url,
-        id: Date.now(),
-      },
-      ...prev.filter((h) => h.url !== url),
-    ]);
+      });
+
+      const linkId = response.data.id;
+
+      const url = `${window.location.origin}/feedback/${linkId}`;
+
+      setGeneratedUrl(url);
+
+      setHistory((prev) => [
+        {
+          id: linkId,
+          employeeName,
+          reviewerName,
+          projectName,
+          month,
+          year,
+          url,
+        },
+        ...prev.filter((h) => h.id !== linkId),
+      ]);
+    } catch (error) {
+      console.error(error);
+      setToast(error.message || "Failed to generate feedback link");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   // Handle Copy URL
@@ -303,6 +363,7 @@ export default function FeedbackUrlGenerator() {
                 ...(btnActive ? styles.generateBtnActive : {}),
               }}
               onClick={handleGenerate}
+              disabled={generating}
               onMouseEnter={() => setBtnHover(true)}
               onMouseLeave={() => {
                 setBtnHover(false);
@@ -311,7 +372,7 @@ export default function FeedbackUrlGenerator() {
               onMouseDown={() => setBtnActive(true)}
               onMouseUp={() => setBtnActive(false)}
             >
-              Generate Feedback Link
+              {generating ? "Generating..." : "Generate Feedback Link"}
             </button>
 
             {/* Generated URL */}
@@ -350,6 +411,11 @@ export default function FeedbackUrlGenerator() {
               </div>
             )}
           </div>
+          {loadingHistory && (
+            <p style={{ textAlign: "center", padding: "16px" }}>
+              Loading previously generated links...
+            </p>
+          )}
 
           {/* History */}
           {history.length > 0 && (
@@ -398,11 +464,7 @@ export default function FeedbackUrlGenerator() {
                       <button
                         style={styles.iconBtn}
                         title="Remove"
-                        onClick={() =>
-                          setHistory((prev) =>
-                            prev.filter((h) => h.id !== item.id),
-                          )
-                        }
+                        onClick={() => handleDelete(item.id)}
                       >
                         <svg
                           width="14"

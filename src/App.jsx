@@ -9,7 +9,7 @@ function App() {
         {/* Feedback URL Generator Screen */}
         <Route path="/" element={<FeedbackUrlGenerator />} />
         {/* Feedback Form */}
-        <Route path="/feedback/:employeeName" element={<FeedbackForm />} />
+        <Route path="/feedback/:linkId" element={<FeedbackForm />} />
       </Routes>
     </BrowserRouter>
   );

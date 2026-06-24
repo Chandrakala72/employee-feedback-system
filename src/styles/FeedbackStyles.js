@@ -331,4 +331,6 @@ export const styles = {
     marginBottom: 14,
     boxShadow: "0 10px 24px rgba(19, 122, 107, 0.35)",
   },
+
+  
 };
