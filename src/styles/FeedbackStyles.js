@@ -13,6 +13,12 @@ export const styles = {
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
     color: "#16181d",
     boxSizing: "border-box",
+    "--brand": C.brand,
+    "--brand-deep": C.brandDeep,
+    "--brand-soft": C.brandSoft,
+    "--brand-line": C.brandLine,
+    "--ink": C.ink,
+    "--muted": C.muted,
   },
 
   frame: {
@@ -332,5 +338,41 @@ export const styles = {
     boxShadow: "0 10px 24px rgba(19, 122, 107, 0.35)",
   },
 
-  
+  shellTopBar: {
+    minHeight: "80vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
+  loader: {
+    width: "40px",
+    height: "40px",
+    border: "4px solid #e5e7eb",
+    borderTop: `4px solid ${C.brand}`,
+    borderRadius: "50%",
+    animation: "spin 0.8s linear infinite",
+  },
+  loadErrorSign: { fontSize: 32, marginBottom: 12 },
+  linkError: {
+    fontSize: 18,
+    fontWeight: 700,
+    color: C.ink,
+    marginBottom: 8,
+  },
+  linkErrorText: { fontSize: 13, color: C.muted },
+  submitErrorText: {
+    fontSize: 12,
+    color: "#dc2626",
+    background: "#fef2f2",
+    border: "1px solid #fecaca",
+    borderRadius: 8,
+    padding: "10px 14px",
+    marginBottom: 8,
+  },
+  loaderText: {
+    fontSize: 14,
+    color: C.muted,
+  },
 };

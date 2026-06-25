@@ -2,34 +2,12 @@ import { useEffect, useState } from "react";
 import myLogo from "../assets/logo.png";
 import { styles } from "../styles/FeedbackURLGeneratorStyles";
 import { saveLink, listLinks, deactivateLink } from "../services/feedbackApi";
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { constants, MONTHS } from "../global/constants";
+import { getPeriodLabel, generateUrl } from "../global/helper";
 
 const currentDate = new Date();
 const currentMonth = currentDate.getMonth();
 const currentYear = currentDate.getFullYear();
-
-function generateUrl(name) {
-  return `${window.location.origin}/feedback/${btoa(name.trim())}`;
-}
-
-function getPeriodLabel(month, year) {
-  const start = MONTHS[month].slice(0, 3);
-  return `${start}–${MONTHS[Math.min(month + 5, 11)].slice(0, 3)} ${year}`;
-}
 
 export default function FeedbackUrlGenerator() {
   const [reviewerName, setReviewerName] = useState("");
@@ -46,18 +24,18 @@ export default function FeedbackUrlGenerator() {
   const [focusField, setFocusField] = useState(null);
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
-
   const [showAdd, setShowAdd] = useState(false);
   const [generating, setGenerating] = useState(false);
 
+  // load history
   useEffect(() => {
     loadHistory();
   }, []);
 
+  // load history of urls
   async function loadHistory() {
     try {
       setLoadingHistory(true);
-
       const res = await listLinks({
         page: 1,
         limit: 100,
@@ -81,6 +59,7 @@ export default function FeedbackUrlGenerator() {
     }
   }
 
+  // handle delete functionality
   async function handleDelete(id) {
     try {
       await deactivateLink(id);
@@ -225,7 +204,7 @@ export default function FeedbackUrlGenerator() {
         </div>
         <div style={styles.topBarRow}>
           <div style={styles.topBarDot} />
-          <p style={styles.topBarTitle}>Feedback URL Generator</p>
+          <p style={styles.topBarTitle}>{constants.feedback_url_generator}</p>
         </div>
       </div>
 
@@ -234,24 +213,21 @@ export default function FeedbackUrlGenerator() {
         <div style={styles.card}>
           {/* Header */}
           <div style={styles.cardHeader}>
-            <h1 style={styles.cardTitle}>Generate a feedback link</h1>
-            <p style={styles.cardSubtitle}>
-              Create a personalized feedback URL. The employee won't see who
-              said what.
-            </p>
+            <h1 style={styles.cardTitle}>{constants.generateLink}</h1>
+            <p style={styles.cardSubtitle}>{constants.generateCaption}</p>
           </div>
 
           {/* Section label */}
           <div style={styles.sectionLabel}>
             <div style={styles.sectionBadge}>1</div>
-            <p style={styles.sectionTitle}>Link details</p>
+            <p style={styles.sectionTitle}>{constants.linkDetails}</p>
           </div>
 
           {/* Form */}
           <div style={styles.formBody}>
             {/* Reviewer name */}
             <div style={styles.fieldGroup}>
-              <label style={styles.label}>Reviewer name</label>
+              <label style={styles.label}>{constants.reviewerName}</label>
               <input
                 style={inputStyle("reviewerName")}
                 type="text"
@@ -278,7 +254,7 @@ export default function FeedbackUrlGenerator() {
               }}
             >
               <div style={styles.fieldGroup}>
-                <label style={styles.label}>Employee name</label>
+                <label style={styles.label}>{constants.employeeName}</label>
                 <input
                   style={inputStyle("employeeName")}
                   type="text"
@@ -296,7 +272,7 @@ export default function FeedbackUrlGenerator() {
                 )}
               </div>
               <div style={styles.fieldGroup}>
-                <label style={styles.label}>Project name </label>
+                <label style={styles.label}>{constants.projectName} </label>
                 <input
                   style={inputStyle("projectName")}
                   type="text"
@@ -313,7 +289,7 @@ export default function FeedbackUrlGenerator() {
 
             {/* Review period */}
             <div style={styles.fieldGroup}>
-              <label style={styles.label}>Review period</label>
+              <label style={styles.label}>{constants.reviewPeriod}</label>
               <div
                 style={{
                   display: "grid",
@@ -372,7 +348,9 @@ export default function FeedbackUrlGenerator() {
               onMouseDown={() => setBtnActive(true)}
               onMouseUp={() => setBtnActive(false)}
             >
-              {generating ? "Generating..." : "Generate Feedback Link"}
+              {generating
+                ? constants.generating
+                : constants.generateFeedbackLink}
             </button>
 
             {/* Generated URL */}
@@ -413,7 +391,7 @@ export default function FeedbackUrlGenerator() {
           </div>
           {loadingHistory && (
             <p style={{ textAlign: "center", padding: "16px" }}>
-              Loading previously generated links...
+              {constants.loadPreviousLink}
             </p>
           )}
 
@@ -429,7 +407,7 @@ export default function FeedbackUrlGenerator() {
               />
               <div style={styles.historySection}>
                 <div style={{ height: "24px" }} />
-                <p style={styles.historyTitle}>Previously generated</p>
+                <p style={styles.historyTitle}>{constants.previousGenerated}</p>
                 {history.map((item) => (
                   <div key={item.id} style={styles.historyItem}>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -486,6 +464,7 @@ export default function FeedbackUrlGenerator() {
                   </div>
                 ))}
 
+                {/* Add new feedback link */}
                 <button style={styles.addNewBtn} onClick={handleAddNew}>
                   <svg
                     width="15"
@@ -500,7 +479,7 @@ export default function FeedbackUrlGenerator() {
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
-                  Create another feedback link
+                  {constants.anotherLink}
                 </button>
               </div>
             </>

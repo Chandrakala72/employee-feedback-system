@@ -5,10 +5,11 @@ import { RatingRow } from "../components/RatingRow";
 import { ThankYou } from "../components/ThankYou";
 import { SectionLabel } from "../components/SectionLabel";
 import { Field } from "../components/Field";
-import { C, DIMENSIONS } from "../global/constants";
+import { C, constants, DIMENSIONS } from "../global/constants";
 import { Divider } from "../components/Divider";
 import { submitFeedback, fetchLink } from "../services/feedbackApi";
 import myLogo from "../assets/logo.png";
+import "../styles/FeedbackForm.css";
 
 export default function FeedbackForm({ onSubmit }) {
   const [submitted, setSubmitted] = useState(false);
@@ -20,8 +21,6 @@ export default function FeedbackForm({ onSubmit }) {
   // linkId comes from the URL: /feedback/:linkId
   const { linkId } = useParams();
 
-  console.log(linkId, "linkId from URL");
-
   // Link metadata loaded from DB (employee name, period label, etc.)
   const [linkMeta, setLinkMeta] = useState(null);
   const [linkError, setLinkError] = useState("");
@@ -30,8 +29,9 @@ export default function FeedbackForm({ onSubmit }) {
   const [wins, setWins] = useState("");
   const [improve, setImprove] = useState("");
   const [reviewer, setReviewer] = useState("");
-
   const ratingsRef = useRef(null);
+  const ratedCount = Object.values(ratings).filter(Boolean).length;
+  const overallValid = !!ratings.overall;
 
   // ── Load link metadata on mount ───────────────────────────────────────────
   useEffect(() => {
@@ -54,9 +54,6 @@ export default function FeedbackForm({ onSubmit }) {
         setLoading(false);
       });
   }, [linkId]);
-
-  const ratedCount = Object.values(ratings).filter(Boolean).length;
-  const overallValid = !!ratings.overall;
 
   const progress = useMemo(() => {
     let p = 0;
@@ -108,7 +105,7 @@ export default function FeedbackForm({ onSubmit }) {
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      setSubmitError(err.message || "Something went wrong. Please try again.");
+      setSubmitError(err.message || constants.apiError);
     } finally {
       setSubmitting(false);
     }
@@ -127,35 +124,9 @@ export default function FeedbackForm({ onSubmit }) {
   if (loading) {
     return (
       <div style={styles.shell}>
-        <StyleTag />
-        <div
-          style={{
-            minHeight: "80vh",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 16,
-          }}
-        >
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              border: "4px solid #e5e7eb",
-              borderTop: `4px solid ${C.brand}`,
-              borderRadius: "50%",
-              animation: "spin 0.8s linear infinite",
-            }}
-          />
-          <p
-            style={{
-              fontSize: 14,
-              color: C.muted,
-            }}
-          >
-            Loading feedback form...
-          </p>
+        <div style={styles.shellTopBar}>
+          <div style={styles.loader} />
+          <p style={styles.loaderText}>{constants.loading_feedback_form}</p>
         </div>
       </div>
     );
@@ -165,7 +136,6 @@ export default function FeedbackForm({ onSubmit }) {
   if (linkError) {
     return (
       <div style={styles.shell}>
-        <StyleTag />
         <div style={styles.frame}>
           <div
             style={{
@@ -174,18 +144,9 @@ export default function FeedbackForm({ onSubmit }) {
               padding: "40px 24px",
             }}
           >
-            <p style={{ fontSize: 32, marginBottom: 12 }}>⚠️</p>
-            <h2
-              style={{
-                fontSize: 18,
-                fontWeight: 700,
-                color: C.ink,
-                marginBottom: 8,
-              }}
-            >
-              Link not found
-            </h2>
-            <p style={{ fontSize: 13, color: C.muted }}>{linkError}</p>
+            <p style={styles.loadErrorSign}>⚠️</p>
+            <h2 style={styles.linkError}>{constants.linkNotFound}</h2>
+            <p style={styles.linkErrorText}>{linkError}</p>
           </div>
         </div>
       </div>
@@ -194,12 +155,9 @@ export default function FeedbackForm({ onSubmit }) {
 
   const employeeName = linkMeta?.employee_name ?? "…";
   const period = linkMeta?.period_label ?? "";
-  
 
   return (
     <div style={styles.shell}>
-      <StyleTag />
-
       {/* Logo */}
       <div style={{ display: "flex", flexDirection: "row", margin: 0 }}>
         <div>
@@ -223,11 +181,8 @@ export default function FeedbackForm({ onSubmit }) {
             <ThankYou consultant={employeeName} onReset={reset} />
           ) : (
             <>
-              <h1 style={styles.title}>Share your feedback</h1>
-              <p style={styles.sub}>
-                Takes about two minutes. Your answers stay between you and
-                Technerds — the employee won't see who said what.
-              </p>
+              <h1 style={styles.title}>{constants.share_feedback}</h1>
+              <p style={styles.sub}>{constants.feedback_info}</p>
 
               {/* Ratings */}
               <div ref={ratingsRef}>
@@ -253,45 +208,33 @@ export default function FeedbackForm({ onSubmit }) {
               {/* Comments */}
               <SectionLabel
                 n="2"
-                title="In your words"
-                caption="Optional, but the most useful part"
+                title={constants.section.label.inWords}
+                caption={constants.section.caption}
               />
 
-              <Field label="What's going well?">
+              <Field label={constants.fields.label.well}>
                 <textarea
                   style={styles.textarea}
                   value={wins}
                   onChange={(e) => setWins(e.target.value)}
-                  placeholder="Strengths, standout moments, things to keep doing…"
+                  placeholder={constants.fields.placeholder.well}
                   rows={3}
                 />
               </Field>
 
-              <Field label="What could be better?">
+              <Field label={constants.fields.label.better}>
                 <textarea
                   style={styles.textarea}
                   value={improve}
                   onChange={(e) => setImprove(e.target.value)}
-                  placeholder="Anything that would make the engagement smoother…"
+                  placeholder={constants.fields.placeholder.better}
                   rows={3}
                 />
               </Field>
 
               {/* Error message */}
               {submitError && (
-                <p
-                  style={{
-                    fontSize: 12,
-                    color: "#dc2626",
-                    background: "#fef2f2",
-                    border: "1px solid #fecaca",
-                    borderRadius: 8,
-                    padding: "10px 14px",
-                    marginBottom: 8,
-                  }}
-                >
-                  {submitError}
-                </p>
+                <p style={styles.submitErrorText}>{submitError}</p>
               )}
 
               {/* Submit */}
@@ -306,111 +249,12 @@ export default function FeedbackForm({ onSubmit }) {
                 onClick={submit}
                 disabled={submitting}
               >
-                {submitting ? "Sending…" : "Send feedback"}
+                {submitting ? constants.sending : constants.sendFeedback}
               </button>
             </>
           )}
         </div>
       </div>
     </div>
-  );
-}
-
-function StyleTag() {
-  return (
-    <style>{`
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        .fade-in {
-          animation: fadeIn .35s ease both;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(6px);
-          }
-          to {
-            opacity: 1;
-            transform: none;
-          }
-        }
-
-        .pop-in {
-          animation: popIn .45s cubic-bezier(.2,.9,.3,1.3) both;
-        }
-
-        @keyframes popIn {
-          from {
-            opacity: 0;
-            transform: scale(.6);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        .btn:hover:not(:disabled) {
-          background: ${C.brandDeep} !important;
-        }
-
-        .btn:active:not(:disabled) {
-          transform: translateY(1px);
-        }
-
-        .btn-ghost:hover {
-          color: ${C.ink} !important;
-          border-color: ${C.muted} !important;
-        }
-
-        .scale-btn:hover {
-          border-color: ${C.brandLine};
-        }
-
-        .chip:hover {
-          border-color: ${C.brandLine} !important;
-        }
-
-        input:focus,
-        textarea:focus {
-          outline: none;
-          border-color: ${C.brand} !important;
-          box-shadow: 0 0 0 3px ${C.brandSoft};
-        }
-
-        button:focus-visible,
-        input:focus-visible,
-        textarea:focus-visible {
-          outline: 2px solid ${C.brand};
-          outline-offset: 2px;
-        }
-
-        textarea {
-          resize: vertical;
-        }
-
-        ::placeholder {
-          color: #9aa3b2;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .fade-in,
-          .pop-in {
-            animation: none !important;
-          }
-
-          * {
-            transition: none !important;
-          }
-        }
-      `}</style>
   );
 }

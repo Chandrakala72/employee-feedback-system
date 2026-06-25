@@ -1,7 +1,4 @@
-// feedbackApi.js
-// Add VITE_API_BASE_URL=http://localhost:3001 to your frontend .env
-
-const BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001";
+import { BASE } from "../global/constants";
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, {

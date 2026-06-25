@@ -1,0 +1,92 @@
+/* FeedbackDashboard.css */
+
+* {
+  box-sizing: border-box;
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid #e3e7ef;
+  border-top-color: #3b5bdb;
+  animation: spin 0.65s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.response-card:hover {
+  box-shadow: 0 6px 20px -6px rgba(59, 91, 219, 0.18) !important;
+  transform: translateY(-2px);
+}
+
+.close-btn:hover {
+  background: #eef2ff !important;
+  color: #3b5bdb !important;
+}
+
+select:focus {
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 2px solid #3b5bdb;
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .stat-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .comments-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modal-card {
+    max-height: 95vh !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .stat-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner,
+  .response-card {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

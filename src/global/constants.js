@@ -1,3 +1,6 @@
+export const BASE =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001";
+
 export const C = {
   // Text
   ink: "#0B2F8A", // Deep logo blue
@@ -64,5 +67,95 @@ export const DIMENSIONS = [
   },
 ];
 
+/* ─── Design tokens ────────────────────────────────────────────────────────── */
+export const C_Dashboard = {
+  brand: "#3B5BDB",
+  brandDeep: "#2f4abf",
+  brandSoft: "#eef1fb",
+  brandLine: "#c7d2f8",
+  ink: "#16181d",
+  muted: "#737c8c",
+  border: "#e3e7ef",
+  bg: "#fafbfd",
+  pageBg: "radial-gradient(1200px 500px at 50% -10%, #dce6f0 0%, #edf1f7 55%)",
+  green: "#16a34a",
+  greenSoft: "#dcfce7",
+  greenLine: "#bbf7d0",
+  amber: "#d97706",
+  amberSoft: "#fef3c7",
+  amberLine: "#fde68a",
+  red: "#dc2626",
+  redSoft: "#fee2e2",
+};
+
 // Scale descriptors for the ratings
 export const SCALE = ["Poor", "Fair", "Good", "Very good", "Excellent"];
+
+export const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export const constants = {
+  feedback_dashboard: "Feedback Dashboard",
+  feedback_form: "Feedback Form",
+  feedback_submitted: "Feedback Submitted",
+  feedback_url_generator: "Feedback URL Generator",
+  generateLink: "Generate a feedback link",
+  generateCaption: "Create a personalized feedback URL. The employee won't see who said what.",
+  linkDetails: "Link details",
+  reviewerName: "Reviewer name",
+  employeeName: "Employee name",
+  projectName: "Project name",
+  reviewPeriod: "Review period",
+  generating: "Generating...",
+  generateFeedbackLink: "Generate Feedback Link",
+  loadPreviousLink: "Loading previously generated links...",
+  previousGenerated: "Previously generated",
+  anotherLink:"Create another feedback link",
+  feedback_responses: "Feedback Responses",
+  feedback_response_info: "Click any card to view the full response.",
+  filters: "Filters",
+  newest_first: "Newest first",
+  oldest_first: "Oldest first",
+  highest_rated: "Highest rated",
+  lowest_rated: "Lowest rated",
+  employee_a_to_z: "Employee A→Z",
+  clear_filters: "Clear filters",
+  next: "Next",
+  prev: "Prev",
+  apiError: "Something went wrong. Please try again.",
+  loading_feedback_form: "Loading feedback form...",
+  linkNotFound: "Link not found",
+  share_feedback: "Share your feedback",
+  feedback_info:
+    "Takes about two minutes. Your answers stay between you and Technerds — the employee won't see who said what.",
+  section: {
+    label: {
+      inWords: "In your words",
+    },
+    caption: "Optional, but the most useful part",
+  },
+  sending: "Sending…",
+  sendFeedback: "Send feedback",
+  fields: {
+    label: {
+      well: "What's going well?",
+      better: "What could be better?",
+    },
+    placeholder: {
+      well: "Strengths, standout moments, things to keep doing…",
+      better: "Anything that would make the engagement smoother…",
+    },
+  },
+};
