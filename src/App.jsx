@@ -8,9 +8,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Feedback URL Generator Screen */}
-        <Route path="/" element={<FeedbackUrlGenerator />} />
+        <Route path="/" element={<FeedbackDashboard />} />
         {/* Feedback Dashboard */}
-        <Route path="/dashboard" element={<FeedbackDashboard />} />
+        <Route path="/feedback-urls" element={<FeedbackUrlGenerator />} />
         {/* Feedback Form */}
         <Route path="/feedback/:linkId" element={<FeedbackForm />} />
       </Routes>

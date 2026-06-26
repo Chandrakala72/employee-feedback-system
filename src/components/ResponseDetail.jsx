@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { C_Dashboard } from "../global/constants";
 import { Avatar } from "./Avatar";
+import { RatingChip } from "./RatingChip";
+import { StarRow } from "./StartRow";
 
 /* ─── Response Detail Modal ────────────────────────────────────────────────── */
 

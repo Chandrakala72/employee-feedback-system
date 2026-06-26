@@ -9,11 +9,15 @@ import { ResponseDetail } from "../components/ResponseDetail";
 import { ResponseCard } from "../components/ResponseListCard";
 import { pageBtnSt, selectStyle } from "../global/helper";
 import "../styles/FeedbackDashboard.css";
+import "../styles/FeedbackDashboard-Responsive.css";
 import { Spinner } from "../components/Spinner";
 import { styles } from "../styles/FeedbackDashboard_styles";
+import { SearchableSelect } from "../components/SearchableSelect";
+import { useNavigate } from "react-router-dom";
 
 /* ─── Main Dashboard ───────────────────────────────────────────────────────── */
 export default function FeedbackDashboard() {
+  const navigate = useNavigate();
   const [responses, setResponses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -109,20 +113,23 @@ export default function FeedbackDashboard() {
       {/* ── Sticky top bar ── */}
       <div style={styles.topBar}>
         <img src={myLogo} alt="Technerds" style={styles.logo} />
-        <div style={styles.brandRow}>
-          <div style={styles.brand} />
-          <span style={styles.dashboardTitle}>
-            {constants.feedback_dashboard}
-          </span>
-        </div>
+        <span style={styles.dashboardTitle}>
+          {constants.feedback_dashboard}
+        </span>
+        <button
+          onClick={() => navigate("/feedback-urls")}
+          style={styles.navBtn}
+        >
+          {constants.generateLinkTitle}
+        </button>
       </div>
 
       <div style={styles.pageHeader}>
         {/* ── Page heading ── */}
-        <div style={{ marginBottom: 22 }}>
+        {/* <div style={{ marginBottom: 22 }}>
           <h1 style={styles.pageHeading}>{constants.feedback_responses}</h1>
           <p style={styles.pageCaption}>{constants.feedback_response_info}</p>
-        </div>
+        </div> */}
 
         {/* ── Filters + sort ── */}
         <div style={styles.filterRow}>
@@ -199,30 +206,24 @@ export default function FeedbackDashboard() {
             ].map(({ label, value, setter, options, ph }) => (
               <div key={label} style={styles.filterTableRow}>
                 <label style={styles.filterLabel}>{label}</label>
-                <select
+                <SearchableSelect
                   value={value}
-                  onChange={handleFilter(setter)}
-                  style={selectStyle(!!value)}
-                >
-                  <option value="">{ph}</option>
-                  {options.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setter}
+                  options={options}
+                  placeholder={ph}
+                />
               </div>
             ))}
           </div>
         </div>
 
         {/* ── Response count ── */}
-        {!loading && !error && (
+        {/* {!loading && !error && (
           <p style={styles.responseCount}>
             {filtered.length} response{filtered.length !== 1 ? "s" : ""}
             {hasFilters ? " matched" : " total"}
           </p>
-        )}
+        )} */}
 
         {/* ── Cards grid ── */}
         {loading ? (

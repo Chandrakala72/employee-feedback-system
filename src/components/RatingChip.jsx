@@ -1,3 +1,4 @@
+import { ratingColor } from "../global/common";
 import { C_Dashboard } from "../global/constants";
 
 export const RatingChip = ({ label, value }) => {

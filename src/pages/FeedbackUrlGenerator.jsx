@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import myLogo from "../assets/logo.png";
 import { styles } from "../styles/FeedbackURLGeneratorStyles";
+import "../styles/FeedbackURLGenerate.css";
 import { saveLink, listLinks, deactivateLink } from "../services/feedbackApi";
 import { constants, MONTHS } from "../global/constants";
 import { getPeriodLabel, generateUrl } from "../global/helper";
+import { useNavigate } from "react-router-dom";
 
 const currentDate = new Date();
 const currentMonth = currentDate.getMonth();
 const currentYear = currentDate.getFullYear();
 
 export default function FeedbackUrlGenerator() {
+  const navigate = useNavigate();
   const [reviewerName, setReviewerName] = useState("");
   const [projectName, setProjectName] = useState("");
   const [employeeName, setEmployeeName] = useState("");
@@ -199,13 +202,17 @@ export default function FeedbackUrlGenerator() {
       <div style={styles.topBar}>
         <div style={styles.topBarLeft}>
           <div>
-            <img src={myLogo} alt="Company Logo" width={120} />
+            <img
+              src={myLogo}
+              alt="Company Logo"
+              style={{ height: 26, objectFit: "contain" }}
+            />
           </div>
         </div>
-        <div style={styles.topBarRow}>
-          <div style={styles.topBarDot} />
-          <p style={styles.topBarTitle}>{constants.feedback_url_generator}</p>
-        </div>
+        <p style={styles.topBarTitle}>{constants.feedback_url_generator}</p>
+        <button onClick={() => navigate("/")} style={styles.navBtn}>
+          {constants.view_dashboard}
+        </button>
       </div>
 
       {/* Main card */}

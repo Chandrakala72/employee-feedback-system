@@ -1,0 +1,17 @@
+/* feedback-url-responsive.css */
+@media (max-width: 480px) {
+  /* hide title text on very small phones — logo stays */
+  .top-bar-title  { display: none; }
+  /* hide period pill — saves space */
+  .top-bar-center { display: none; }
+
+  .nav-btn        { padding: 7px 12px; font-size: 13px; }
+
+  /* single-column grid for Department / Period row */
+  .form-row       { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 640px) {
+  /* stack history item actions below name+meta when narrow */
+  .history-item   { align-items: flex-start; }
+}

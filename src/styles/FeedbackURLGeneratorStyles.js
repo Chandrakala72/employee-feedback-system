@@ -7,6 +7,8 @@ export const styles = {
     padding: "0",
     margin: "0",
   },
+
+  // ─── Top bar ───────────────────────────────────────────────
   topBar: {
     backgroundColor: "#ffffff",
     borderBottom: "1px solid #e2e6f0",
@@ -15,13 +17,22 @@ export const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     height: "56px",
+    gap: "12px", // prevents items from colliding on narrow screens
   },
   topBarLeft: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
+    flexShrink: 0, // logo + title never compress
   },
-
+  topBarCenter: {
+    flex: 1, // absorbs available space between left and right
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: 0, // allows text-overflow to engage
+    overflow: "hidden",
+  },
   topBarRow: {
     display: "flex",
     flexDirection: "row",
@@ -33,18 +44,37 @@ export const styles = {
     height: "10px",
     borderRadius: "50%",
     backgroundColor: "#3B5BDB",
+    flexShrink: 0,
   },
   topBarTitle: {
     fontSize: "15px",
     fontWeight: "600",
     color: "#1a2340",
     margin: 0,
+    whiteSpace: "nowrap",
   },
   topBarPeriod: {
     fontSize: "14px",
     color: "#3B5BDB",
     fontWeight: "500",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
+  navBtn: {
+    padding: "8px 18px",
+    borderRadius: 8,
+    border: "1px solid #3B5BDB",
+    background: "transparent",
+    color: "#3B5BDB",
+    fontWeight: 600,
+    fontSize: 14,
+    cursor: "pointer",
+    flexShrink: 0, // never shrink the nav button
+    whiteSpace: "nowrap",
+  },
+
+  // ─── Content ───────────────────────────────────────────────
   contentWrapper: {
     maxWidth: "760px",
     margin: "0 auto",
@@ -57,12 +87,14 @@ export const styles = {
     overflow: "hidden",
   },
   cardHeader: {
-    padding: "25px 40px 28px",
+    // fluid padding: generous on desktop, tighter on mobile (set via className + CSS)
+    padding:
+      "clamp(18px, 4vw, 25px) clamp(16px, 5vw, 40px) clamp(20px, 4vw, 28px)",
     borderBottom: "1px solid #edf0f7",
     textAlign: "center",
   },
   cardTitle: {
-    fontSize: "22px",
+    fontSize: "clamp(18px, 2.5vw, 22px)",
     fontWeight: "700",
     color: "#1a2340",
     margin: "0 0 6px",
@@ -77,7 +109,7 @@ export const styles = {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    padding: "20px 40px 0",
+    padding: "clamp(16px, 3vw, 20px) clamp(16px, 5vw, 40px) 0",
   },
   sectionBadge: {
     width: "28px",
@@ -99,7 +131,8 @@ export const styles = {
     margin: 0,
   },
   formBody: {
-    padding: "15px 40px 36px",
+    padding:
+      "clamp(12px, 3vw, 15px) clamp(16px, 5vw, 40px) clamp(24px, 5vw, 36px)",
     display: "flex",
     flexDirection: "column",
     gap: "15px",
@@ -136,7 +169,8 @@ export const styles = {
   },
   row: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",
+    // collapses to 1 col below ~360px naturally; for explicit mobile override use className
+    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
     gap: "16px",
   },
   select: {
@@ -182,12 +216,8 @@ export const styles = {
     letterSpacing: "0.01em",
     marginTop: "4px",
   },
-  generateBtnHover: {
-    backgroundColor: "#2f4abf",
-  },
-  generateBtnActive: {
-    transform: "scale(0.98)",
-  },
+  generateBtnHover: { backgroundColor: "#2f4abf" },
+  generateBtnActive: { transform: "scale(0.98)" },
   resultBox: {
     backgroundColor: "#f0f4ff",
     border: "1.5px solid #c7d2f8",
@@ -198,6 +228,7 @@ export const styles = {
     justifyContent: "space-between",
     gap: "12px",
     marginTop: "4px",
+    flexWrap: "wrap", // URL + copy button wrap on very narrow screens
   },
   resultUrl: {
     fontSize: "12px",
@@ -205,6 +236,7 @@ export const styles = {
     fontWeight: "500",
     wordBreak: "break-all",
     flex: 1,
+    minWidth: "120px", // prevents the URL collapsing to zero before wrapping
     textDecoration: "none",
   },
   copyBtn: {
@@ -228,8 +260,10 @@ export const styles = {
     backgroundColor: "#3B5BDB",
     color: "#ffffff",
   },
+
+  // ─── History ───────────────────────────────────────────────
   historySection: {
-    padding: "0 40px 36px",
+    padding: "0 clamp(16px, 5vw, 40px) clamp(24px, 5vw, 36px)",
   },
   historyTitle: {
     fontSize: "13px",
@@ -249,12 +283,20 @@ export const styles = {
     backgroundColor: "#fafbfd",
     marginBottom: "8px",
     gap: "12px",
+    flexWrap: "wrap", // actions wrap below info on very narrow screens
+  },
+  historyInfo: {
+    flex: 1,
+    minWidth: 0, // allows text to truncate rather than overflow
   },
   historyName: {
     fontSize: "14px",
     fontWeight: "600",
     color: "#1a2340",
     margin: "0 0 2px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   historyMeta: {
     fontSize: "12px",
@@ -302,6 +344,8 @@ export const styles = {
     transition: "background-color 0.15s",
     marginBottom: "4px",
   },
+
+  // ─── Misc ──────────────────────────────────────────────────
   errorMsg: {
     fontSize: "12px",
     color: "#c0392b",
