@@ -210,7 +210,13 @@ export default function FeedbackUrlGenerator() {
           </div>
         </div>
         <p style={styles.topBarTitle}>{constants.feedback_url_generator}</p>
-        <button onClick={() => navigate("/")} style={styles.navBtn}>
+        <button
+          onClick={() => {
+            setHistory([]);
+            navigate("/", { replace: true });
+          }}
+          style={styles.navBtn}
+        >
           {constants.view_dashboard}
         </button>
       </div>

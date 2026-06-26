@@ -117,7 +117,7 @@ export default function FeedbackDashboard() {
           {constants.feedback_dashboard}
         </span>
         <button
-          onClick={() => navigate("/feedback-urls")}
+          onClick={() => navigate("/feedback-urls", { replace: true })}
           style={styles.navBtn}
         >
           {constants.generateLinkTitle}
