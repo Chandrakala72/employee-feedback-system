@@ -82,22 +82,22 @@ export const styles = {
   },
   card: {
     backgroundColor: "#ffffff",
-    borderRadius: "16px",
+    borderTopLeftRadius: "16px",
+    borderTopRightRadius: "16px",
     boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04)",
     overflow: "hidden",
   },
   cardHeader: {
     // fluid padding: generous on desktop, tighter on mobile (set via className + CSS)
     padding:
-      "clamp(18px, 4vw, 25px) clamp(16px, 5vw, 40px) clamp(20px, 4vw, 28px)",
-    borderBottom: "1px solid #edf0f7",
+      "clamp(18px, 4vw, 25px) clamp(16px, 5vw, 40px) clamp(5px, 4vw, 5px)",
     textAlign: "center",
   },
   cardTitle: {
     fontSize: "clamp(18px, 2.5vw, 22px)",
     fontWeight: "700",
     color: "#1a2340",
-    margin: "0 0 6px",
+    margin: "0 0 2px",
   },
   cardSubtitle: {
     fontSize: "14px",
@@ -136,6 +136,7 @@ export const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "15px",
+    backgroundColor: "#e2e8f7"
   },
   fieldGroup: {
     display: "flex",
@@ -280,7 +281,7 @@ export const styles = {
     padding: "12px 16px",
     borderRadius: "10px",
     border: "1px solid #edf0f7",
-    backgroundColor: "#fafbfd",
+    backgroundColor: "#ffffff",
     marginBottom: "8px",
     gap: "12px",
     flexWrap: "wrap", // actions wrap below info on very narrow screens
@@ -366,5 +367,44 @@ export const styles = {
     pointerEvents: "none",
     opacity: 1,
     transition: "opacity 0.3s",
+  },
+
+  // tab-styles
+  strip: {
+    display: "flex",
+    borderTop: "1px solid #edf0f7",
+    marginTop: 4,
+  },
+  tab: {
+    flex: 1,
+    padding: "12px 0",
+    fontSize: "14px",
+    fontWeight: "600",
+    color: "#6b7898",
+    background: "none",
+    border: "none",
+    borderBottom: "2px solid transparent",
+    cursor: "pointer",
+    transition: "color 0.15s, border-color 0.15s",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  tabActive: {
+    color: "#3B5BDB",
+    borderBottom: "2px solid #3B5BDB",
+  },
+  badge: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 20,
+    height: 20,
+    borderRadius: "50%",
+    backgroundColor: "#3B5BDB",
+    color: "#ffffff",
+    fontSize: 11,
+    fontWeight: 700,
   },
 };

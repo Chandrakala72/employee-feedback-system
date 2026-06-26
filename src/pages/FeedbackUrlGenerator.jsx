@@ -29,6 +29,7 @@ export default function FeedbackUrlGenerator() {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [activeTab, setActiveTab] = useState("generate"); // "generate" | "history"
 
   // load history
   useEffect(() => {
@@ -230,15 +231,35 @@ export default function FeedbackUrlGenerator() {
             <p style={styles.cardSubtitle}>{constants.generateCaption}</p>
           </div>
 
-          {/* Section label */}
-          <div style={styles.sectionLabel}>
-            <div style={styles.sectionBadge}>1</div>
-            <p style={styles.sectionTitle}>{constants.linkDetails}</p>
+          {/* Tab strip */}
+          <div style={styles.strip}>
+            <button
+              style={{
+                ...styles.tab,
+                ...(activeTab === "generate" ? styles.tabActive : {}),
+              }}
+              onClick={() => setActiveTab("generate")}
+            >
+              {constants.generateLink}
+            </button>
+            <button
+              style={{
+                ...styles.tab,
+                ...(activeTab === "history" ? styles.tabActive : {}),
+              }}
+              onClick={() => setActiveTab("history")}
+            >
+              {constants.previousGenerated}
+              {history.length > 0 && (
+                <span style={styles.badge}>{history.length}</span>
+              )}
+            </button>
           </div>
+        </div>
 
-          {/* Form */}
+        {/* ── Generate tab ── */}
+        {activeTab === "generate" && (
           <div style={styles.formBody}>
-            {/* Reviewer name */}
             <div style={styles.fieldGroup}>
               <label style={styles.label}>{constants.reviewerName}</label>
               <input
@@ -258,7 +279,6 @@ export default function FeedbackUrlGenerator() {
               )}
             </div>
 
-            {/* Employee + Project row */}
             <div
               style={{
                 ...styles.row,
@@ -285,7 +305,7 @@ export default function FeedbackUrlGenerator() {
                 )}
               </div>
               <div style={styles.fieldGroup}>
-                <label style={styles.label}>{constants.projectName} </label>
+                <label style={styles.label}>{constants.projectName}</label>
                 <input
                   style={inputStyle("projectName")}
                   type="text"
@@ -300,7 +320,6 @@ export default function FeedbackUrlGenerator() {
 
             <div style={styles.divider} />
 
-            {/* Review period */}
             <div style={styles.fieldGroup}>
               <label style={styles.label}>{constants.reviewPeriod}</label>
               <div
@@ -308,43 +327,38 @@ export default function FeedbackUrlGenerator() {
                   display: "grid",
                   gridTemplateColumns:
                     window.innerWidth < 560 ? "1fr" : "1fr 1fr",
-                  gap: "16px",
+                  gap: 16,
                 }}
               >
-                <div style={{ position: "relative" }}>
-                  <select
-                    style={selectStyle("month")}
-                    value={month}
-                    onChange={(e) => setMonth(Number(e.target.value))}
-                    onFocus={() => setFocusField("month")}
-                    onBlur={() => setFocusField(null)}
-                  >
-                    {MONTHS.map((m, i) => (
-                      <option key={m} value={i}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div style={{ position: "relative" }}>
-                  <select
-                    style={selectStyle("year")}
-                    value={year}
-                    onChange={(e) => setYear(Number(e.target.value))}
-                    onFocus={() => setFocusField("year")}
-                    onBlur={() => setFocusField(null)}
-                  >
-                    {years.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <select
+                  style={selectStyle("month")}
+                  value={month}
+                  onChange={(e) => setMonth(Number(e.target.value))}
+                  onFocus={() => setFocusField("month")}
+                  onBlur={() => setFocusField(null)}
+                >
+                  {MONTHS.map((m, i) => (
+                    <option key={m} value={i}>
+                      {m}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  style={selectStyle("year")}
+                  value={year}
+                  onChange={(e) => setYear(Number(e.target.value))}
+                  onFocus={() => setFocusField("year")}
+                  onBlur={() => setFocusField(null)}
+                >
+                  {years.map((y) => (
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
-            {/* Generate button */}
             <button
               style={{
                 ...styles.generateBtn,
@@ -366,7 +380,6 @@ export default function FeedbackUrlGenerator() {
                 : constants.generateFeedbackLink}
             </button>
 
-            {/* Generated URL */}
             {generatedUrl && (
               <div style={styles.resultBox}>
                 <a
@@ -384,100 +397,118 @@ export default function FeedbackUrlGenerator() {
                   }}
                   onClick={() => handleCopy(generatedUrl)}
                 >
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
                   {copied ? "Copied!" : "Copy"}
                 </button>
               </div>
             )}
           </div>
-          {loadingHistory && (
-            <p style={{ textAlign: "center", padding: "16px" }}>
-              {constants.loadPreviousLink}
-            </p>
-          )}
+        )}
 
-          {/* History */}
-          {history.length > 0 && (
-            <>
+        {/* ── History tab ── */}
+        {activeTab === "history" && (
+          <div style={styles.formBody}>
+            {loadingHistory ? (
+              <p
+                style={{
+                  textAlign: "center",
+                  padding: "24px 0",
+                  color: "#6b7898",
+                  fontSize: 14,
+                }}
+              >
+                {constants.loadPreviousLink}
+              </p>
+            ) : history.length === 0 ? (
               <div
                 style={{
-                  height: "1px",
-                  backgroundColor: "#edf0f7",
-                  margin: "0 40px",
+                  textAlign: "center",
+                  padding: "40px 0",
+                  color: "#6b7898",
                 }}
-              />
-              <div style={styles.historySection}>
-                <div style={{ height: "24px" }} />
-                <p style={styles.historyTitle}>{constants.previousGenerated}</p>
-                {history.map((item) => (
-                  <div key={item.id} style={styles.historyItem}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={styles.historyName}>{item.employeeName}</p>
-                      <p style={styles.historyMeta}>
-                        {item.reviewerName}
-                        {item.projectName ? ` · ${item.projectName}` : ""}
-                        {" · "}
-                        {getPeriodLabel(item.month, item.year)}
-                      </p>
-                    </div>
-                    <div style={styles.historyActions}>
-                      <button
-                        style={styles.iconBtn}
-                        title="Copy link"
-                        onClick={() => handleCopy(item.url)}
+              >
+                <p style={{ fontSize: 14, marginBottom: 12 }}>
+                  No links generated yet
+                </p>
+                <button
+                  style={styles.navBtn}
+                  onClick={() => setActiveTab("generate")}
+                >
+                  Generate your first link
+                </button>
+              </div>
+            ) : (
+              <>
+                <div
+                  style={{
+                    maxHeight: "calc(100vh - 280px)", // leaves room for topbar + card header + tabs
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                    paddingRight: "4px", // prevents scrollbar from clipping content
+                  }}
+                >
+                  {history.map((item) => (
+                    <div key={item.id} style={styles.historyItem}>
+                      <div
+                        style={{
+                          flex: 1,
+                          minWidth: 0,
+                        }}
                       >
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                        <p style={styles.historyName}>{item.employeeName}</p>
+                        <p style={styles.historyMeta}>
+                          {item.reviewerName}
+                          {item.projectName ? ` · ${item.projectName}` : ""}
+                          {" · "}
+                          {getPeriodLabel(item.month, item.year)}
+                        </p>
+                      </div>
+                      <div style={styles.historyActions}>
+                        <button
+                          style={styles.iconBtn}
+                          title="Copy link"
+                          onClick={() => handleCopy(item.url)}
                         >
-                          <rect x="9" y="9" width="13" height="13" rx="2" />
-                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                        </svg>
-                      </button>
-                      <button
-                        style={styles.iconBtn}
-                        title="Remove"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <rect x="9" y="9" width="13" height="13" rx="2" />
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                          </svg>
+                        </button>
+                        <button
+                          style={styles.iconBtn}
+                          title="Remove"
+                          onClick={() => handleDelete(item.id)}
                         >
-                          <polyline points="3 6 5 6 21 6" />
-                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                          <path d="M10 11v6M14 11v6" />
-                          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                        </svg>
-                      </button>
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6M14 11v6" />
+                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-
-                {/* Add new feedback link */}
+                  ))}
+                </div>
                 <button style={styles.addNewBtn} onClick={handleAddNew}>
                   <svg
                     width="15"
@@ -494,22 +525,18 @@ export default function FeedbackUrlGenerator() {
                   </svg>
                   {constants.anotherLink}
                 </button>
-              </div>
-            </>
-          )}
-        </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Toast */}
       {toast && <div style={styles.toast}>{toast}</div>}
 
-      {/* Responsive styles via a style tag */}
       <style>{`
-        @media (max-width: 560px) {
-          .form-row { grid-template-columns: 1fr !important; }
-        }
+        @media (max-width: 560px) { .form-row { grid-template-columns: 1fr !important; } }
         * { box-sizing: border-box; }
-        input::placeholder, select option[disabled] { color: #aab0c8; }
+        input::placeholder { color: #aab0c8; }
         button:focus-visible { outline: 2px solid #3B5BDB; outline-offset: 2px; }
         input:focus-visible, select:focus-visible { outline: none; }
       `}</style>
