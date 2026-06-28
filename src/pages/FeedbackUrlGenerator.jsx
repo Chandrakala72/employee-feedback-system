@@ -85,6 +85,7 @@ export default function FeedbackUrlGenerator() {
 
   // Handle Generate URL
   const handleGenerate = async () => {
+    setToast("");
     const e = validate();
 
     if (Object.keys(e).length) {
@@ -97,7 +98,6 @@ export default function FeedbackUrlGenerator() {
       setGenerating(true);
 
       const response = await saveLink({
-        reviewName: reviewerName,
         employeeName,
         projectName,
         reviewerName,
@@ -180,8 +180,7 @@ export default function FeedbackUrlGenerator() {
     setYear(currentYear);
     setGeneratedUrl("");
     setErrors({});
-    setShowAdd(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setActiveTab("generate");
   };
 
   const years = [];
@@ -238,9 +237,11 @@ export default function FeedbackUrlGenerator() {
                 ...styles.tab,
                 ...(activeTab === "generate" ? styles.tabActive : {}),
               }}
-              onClick={() => setActiveTab("generate")}
+              onClick={() => {
+                setActiveTab("generate");
+              }}
             >
-              {constants.generateLink}
+              {constants.createLink}
             </button>
             <button
               style={{
@@ -315,6 +316,9 @@ export default function FeedbackUrlGenerator() {
                   onFocus={() => setFocusField("projectName")}
                   onBlur={() => setFocusField(null)}
                 />
+                {errors.projectName && (
+                  <span style={styles.errorMsg}>{errors.projectName}</span>
+                )}
               </div>
             </div>
 
@@ -431,7 +435,10 @@ export default function FeedbackUrlGenerator() {
                 </p>
                 <button
                   style={styles.navBtn}
-                  onClick={() => setActiveTab("generate")}
+                  onClick={() => {
+                    // setActiveTab("generate");
+                    handleGenerate();
+                  }}
                 >
                   Generate your first link
                 </button>

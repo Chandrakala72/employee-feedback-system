@@ -112,6 +112,7 @@ export const constants = {
   feedback_submitted: "Feedback Submitted",
   feedback_url_generator: "Feedback URL Generator",
   generateLink: "Generate a feedback link",
+  createLink:"Create Feedback Link",
   view_dashboard: "View Dashboard",
   generateCaption:
     "Create a personalized feedback URL. The employee won't see who said what.",

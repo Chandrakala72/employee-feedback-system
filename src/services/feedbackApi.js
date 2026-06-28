@@ -16,7 +16,7 @@ async function request(path, options = {}) {
  * Save a generated feedback link. Returns { data: { id, ... } }.
  * Store data.id as linkId — embed it in the feedback URL.
  *
- * @param {{ reviewName, employeeName, projectName?, reviewerName?, month, year }} payload
+ * @param {{ employeeName, projectName, reviewerName, month, year }} payload
  */
 export async function saveLink(payload) {
   return request("/api/links", {
