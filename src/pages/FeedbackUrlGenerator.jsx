@@ -123,11 +123,13 @@ export default function FeedbackUrlGenerator() {
         },
         ...prev.filter((h) => h.id !== linkId),
       ]);
+      setToast("Link generated Successfully");
     } catch (error) {
       console.error(error);
       setToast(error.message || "Failed to generate feedback link");
     } finally {
       setGenerating(false);
+      setTimeout(() => setToast(""), 3000);
     }
   };
 

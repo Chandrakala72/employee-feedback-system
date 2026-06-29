@@ -354,7 +354,7 @@ export const styles = {
   },
   toast: {
     position: "fixed",
-    bottom: "28px",
+    top: "28px",
     left: "50%",
     transform: "translateX(-50%)",
     backgroundColor: "#1a2340",
