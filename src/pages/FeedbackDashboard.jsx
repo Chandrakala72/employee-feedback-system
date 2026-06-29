@@ -183,19 +183,20 @@ export default function FeedbackDashboard() {
           <div style={styles.filterGrid} className="filter-grid">
             {[
               {
-                label: "Employee",
-                value: empFilter,
-                setter: setEmpFilter,
-                options: employees,
-                ph: "All employees",
-              },
-              {
                 label: "Project",
                 value: projectFilter,
                 setter: setProjectFilter,
                 options: projects,
                 ph: "All projects",
               },
+              {
+                label: "Employee",
+                value: empFilter,
+                setter: setEmpFilter,
+                options: employees,
+                ph: "All employees",
+              },
+
               {
                 label: "Period",
                 value: periodFilter,

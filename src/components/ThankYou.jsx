@@ -19,8 +19,9 @@ export const ThankYou = ({ consultant, onReset }) => {
         Thank you
       </h1>
       <p style={{ ...styles.sub, textAlign: "center", maxWidth: 360 }}>
-        Your feedback{consultant ? ` on ${consultant.split(" ")[0]}` : ""} has
-        been recorded. It helps us keep the right people on your account.
+        Your response for {consultant ? ` on ${consultant.split(" ")[0]}` : ""}{" "}
+        has been recorded. It helps us continuously improve and maintain the
+        quality of our work.
       </p>
     </div>
   );

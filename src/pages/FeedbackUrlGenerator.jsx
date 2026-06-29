@@ -212,24 +212,6 @@ export default function FeedbackUrlGenerator() {
               }}
             >
               <div style={styles.fieldGroup}>
-                <label style={styles.label}>{constants.employeeName}</label>
-                <input
-                  style={inputStyle("employeeName")}
-                  type="text"
-                  placeholder="Enter Employee Name"
-                  value={employeeName}
-                  onChange={(e) => {
-                    setEmployeeName(e.target.value);
-                    setErrors((prev) => ({ ...prev, employeeName: "" }));
-                  }}
-                  onFocus={() => setFocusField("employeeName")}
-                  onBlur={() => setFocusField(null)}
-                />
-                {errors.projectName && (
-                  <span style={styles.errorMsg}>{errors.employeeName}</span>
-                )}
-              </div>
-              <div style={styles.fieldGroup}>
                 <label style={styles.label}>{constants.projectName}</label>
                 <input
                   style={inputStyle("projectName")}
@@ -245,6 +227,24 @@ export default function FeedbackUrlGenerator() {
                 />
                 {errors.projectName && (
                   <span style={styles.errorMsg}>{errors.projectName}</span>
+                )}
+              </div>
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>{constants.employeeName}</label>
+                <input
+                  style={inputStyle("employeeName")}
+                  type="text"
+                  placeholder="Enter Employee Name"
+                  value={employeeName}
+                  onChange={(e) => {
+                    setEmployeeName(e.target.value);
+                    setErrors((prev) => ({ ...prev, employeeName: "" }));
+                  }}
+                  onFocus={() => setFocusField("employeeName")}
+                  onBlur={() => setFocusField(null)}
+                />
+                {errors.projectName && (
+                  <span style={styles.errorMsg}>{errors.employeeName}</span>
                 )}
               </div>
             </div>

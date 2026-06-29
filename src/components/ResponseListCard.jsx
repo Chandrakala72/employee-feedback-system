@@ -199,7 +199,7 @@ export function ResponseCard({ row, onClick }) {
         <span
           style={{ fontSize: 11, fontWeight: 600, color: C_Dashboard.brand }}
         >
-          View full response →
+          View Feedback →
         </span>
       </div>
     </div>

@@ -51,9 +51,9 @@ export const RatingRow = ({ dim, value, onChange, last, showError }) => {
               onClick={() => onChange(n)}
               style={{
                 ...styles.scaleBtn,
-                background: on ? C.brand : previewing ? C.brandSoft : C.surface,
+                background: on ? "#6B93E0" : previewing ? C.brandSoft : C.surface,
                 borderColor: on
-                  ? C.brand
+                  ? "#6B93E0"
                   : previewing
                     ? C.brandLine
                     : showError
@@ -61,7 +61,7 @@ export const RatingRow = ({ dim, value, onChange, last, showError }) => {
                       : C.line,
                 color: on ? "#fff" : C.body,
                 transform: on ? "translateY(-1px)" : "none",
-                boxShadow: on ? "0 6px 14px rgba(19,122,107,0.28)" : "none",
+                boxShadow: on ? "0 6px 14px rgba(164, 214, 244, 0.28)" : "none",
               }}
             >
               {n}

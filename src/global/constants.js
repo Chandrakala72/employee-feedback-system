@@ -38,26 +38,31 @@ export const DIMENSIONS = [
     key: "technical",
     label: "Technical expertise",
     hint: "Depth of skill and quality of the work delivered",
+    required: true,
   },
   {
     key: "communication",
     label: "Communication & responsiveness",
     hint: "Clarity, updates, and how quickly they reply",
+    required: true,
   },
   {
     key: "reliability",
     label: "Reliability & deadlines",
     hint: "Shows up, follows through, hits commitments",
+    required: true,
   },
   {
     key: "problemSolving",
     label: "Problem-solving & initiative",
     hint: "Anticipates issues and proposes solutions",
+    required: true,
   },
   {
     key: "collaboration",
     label: "Professionalism & collaboration",
     hint: "Fits the team and is good to work with",
+    required: true,
   },
   {
     key: "overall",
@@ -112,7 +117,7 @@ export const constants = {
   feedback_submitted: "Feedback Submitted",
   feedback_url_generator: "Feedback URL Generator",
   generateLink: "Generate a feedback link",
-  createLink:"Create Feedback Link",
+  createLink: "Create Feedback Link",
   view_dashboard: "View Dashboard",
   generateCaption:
     "Create a personalized feedback URL. The employee won't see who said what.",
