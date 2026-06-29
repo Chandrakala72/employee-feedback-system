@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { styles } from "../styles/FeedbackStyles";
 import { RatingRow } from "../components/RatingRow";
@@ -54,14 +54,6 @@ export default function FeedbackForm({ onSubmit }) {
         setLoading(false);
       });
   }, [linkId]);
-
-  const progress = useMemo(() => {
-    let p = 0;
-    p += Math.min(ratedCount, DIMENSIONS.length) * (70 / DIMENSIONS.length);
-    if (wins.trim() || improve.trim()) p += 18;
-    if (submitted) p = 100;
-    return Math.min(Math.round(p), 100);
-  }, [ratedCount, wins, improve, submitted]);
 
   // ── Submit handler ────────────────────────────────────────────────────────
   async function submit() {

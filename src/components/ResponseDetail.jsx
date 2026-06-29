@@ -47,7 +47,7 @@ export const ResponseDetail = ({ row, onClose }) => {
   }, [onClose]);
 
   const date = row.submitted_at
-    ? new Date(row.submitted_at).toLocaleDateString("en-IN", {
+    ? new Date(row.submitted_at).toLocaleString(undefined, {
         day: "2-digit",
         month: "long",
         year: "numeric",
@@ -109,7 +109,7 @@ export const ResponseDetail = ({ row, onClose }) => {
             zIndex: 1,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Avatar name={row.employee_name} size={44} />
             <div>
               <h2
@@ -118,6 +118,7 @@ export const ResponseDetail = ({ row, onClose }) => {
                   fontSize: 16,
                   fontWeight: 700,
                   color: C_Dashboard.ink,
+                  textAlign: "left",
                 }}
               >
                 {row.employee_name}

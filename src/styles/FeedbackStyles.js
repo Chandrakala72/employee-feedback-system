@@ -67,21 +67,6 @@ export const styles = {
     borderRadius: 999,
   },
 
-  progressTrack: {
-    height: 6,
-    background: "#d8dee9",
-    borderRadius: 999,
-    overflow: "hidden",
-    marginBottom: 18,
-  },
-
-  progressFill: {
-    height: "100%",
-    background: "linear-gradient(90deg, C.brand, C.brandDeep)",
-    borderRadius: 999,
-    transition: "width 0.45s ease",
-  },
-
   card: {
     background: "#ffffff",
     borderRadius: 18,
