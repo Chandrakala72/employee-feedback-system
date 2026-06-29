@@ -41,8 +41,21 @@ export function pageBtnSt(disabled, active = false) {
 }
 
 export function getPeriodLabel(month, year) {
-  const start = MONTHS[month].slice(0, 3);
-  return `${start}–${MONTHS[Math.min(month + 5, 11)].slice(0, 3)} ${year}`;
+  const SHORT_MONTHS = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  return `${SHORT_MONTHS[month]} ${year}`;
 }
 
 export function generateUrl(name) {

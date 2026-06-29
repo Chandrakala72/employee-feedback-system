@@ -94,10 +94,11 @@ export const styles = {
     textAlign: "center",
   },
   cardTitle: {
-    fontSize: "clamp(18px, 2.5vw, 22px)",
+    fontSize: "20px",
     fontWeight: "700",
     color: "#1a2340",
     margin: "0 0 2px",
+    fontFamily: "inherit",
   },
   cardSubtitle: {
     fontSize: "14px",
@@ -136,12 +137,12 @@ export const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "15px",
-    backgroundColor: "#e2e8f7"
+    backgroundColor: "#e2e8f7",
   },
   fieldGroup: {
     display: "flex",
     flexDirection: "column",
-    gap: "4px",
+    gap: "2px",
   },
   label: {
     fontSize: "13px",
@@ -151,11 +152,14 @@ export const styles = {
     textAlign: "left",
   },
   input: {
-    height: "44px",
+    height: "35px",
     borderRadius: "10px",
-    border: "1.5px solid #dde3f0",
+    borderWidth: "1.5px",
+    borderStyle: "solid",
+    borderColor: "#dde3f0",
+    borderRadius: "10px",
     padding: "0 14px",
-    fontSize: "14px",
+    fontSize: "12px",
     color: "#1a2340",
     backgroundColor: "#fafbfd",
     outline: "none",
@@ -177,9 +181,11 @@ export const styles = {
   select: {
     height: "35px",
     borderRadius: "10px",
-    border: "1.5px solid #dde3f0",
+    borderWidth: "1.5px",
+    borderStyle: "solid",
+    borderColor: "#dde3f0",
     padding: "0 36px 0 14px",
-    fontSize: "14px",
+    fontSize: "12px",
     color: "#1a2340",
     backgroundColor: "#fafbfd",
     outline: "none",
@@ -199,9 +205,9 @@ export const styles = {
     backgroundColor: "#ffffff",
   },
   divider: {
-    height: "1px",
+    height: "0.5px",
     backgroundColor: "#edf0f7",
-    margin: "2px 0",
+    margin: "0px 0",
   },
   generateBtn: {
     height: "38px",

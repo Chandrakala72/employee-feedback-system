@@ -63,11 +63,19 @@ export function ResponseCard({ row, onClick }) {
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "left",
               }}
             >
               {row.employee_name}
             </p>
-            <p style={{ margin: 0, fontSize: 11, color: C_Dashboard.muted }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 11,
+                color: C_Dashboard.muted,
+                textAlign: "left",
+              }}
+            >
               {row.reviewer_name ? `by ${row.reviewer_name}` : "Anonymous"}
             </p>
           </div>

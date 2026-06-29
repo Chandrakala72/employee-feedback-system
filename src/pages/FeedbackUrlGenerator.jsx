@@ -6,6 +6,7 @@ import { saveLink, listLinks, deactivateLink } from "../services/feedbackApi";
 import { constants, MONTHS } from "../global/constants";
 import { getPeriodLabel, generateUrl } from "../global/helper";
 import { useNavigate } from "react-router-dom";
+import { PeriodRow } from "../components/PeriodRow";
 
 const currentDate = new Date();
 const currentMonth = currentDate.getMonth();
@@ -16,8 +17,6 @@ export default function FeedbackUrlGenerator() {
   const [reviewerName, setReviewerName] = useState("");
   const [projectName, setProjectName] = useState("");
   const [employeeName, setEmployeeName] = useState("");
-  const [month, setMonth] = useState(currentMonth);
-  const [year, setYear] = useState(currentYear);
   const [generatedUrl, setGeneratedUrl] = useState("");
   const [errors, setErrors] = useState({});
   const [copied, setCopied] = useState(false);
@@ -25,50 +24,17 @@ export default function FeedbackUrlGenerator() {
   const [btnHover, setBtnHover] = useState(false);
   const [btnActive, setBtnActive] = useState(false);
   const [focusField, setFocusField] = useState(null);
-  const [history, setHistory] = useState([]);
-  const [loadingHistory, setLoadingHistory] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [activeTab, setActiveTab] = useState("generate"); // "generate" | "history"
-
-  // load history
-  useEffect(() => {
-    loadHistory();
-  }, []);
-
-  // load history of urls
-  async function loadHistory() {
-    try {
-      setLoadingHistory(true);
-      const res = await listLinks({
-        page: 1,
-        limit: 100,
-      });
-
-      const formattedHistory = res.data.map((link) => ({
-        id: link.id,
-        employeeName: link.employee_name,
-        reviewerName: link.reviewer_name,
-        projectName: link.project_name,
-        month: link.period_month,
-        year: link.period_year,
-        url: `${window.location.origin}/feedback/${link.id}`,
-      }));
-
-      setHistory(formattedHistory);
-    } catch (err) {
-      console.error("Failed to load history:", err);
-    } finally {
-      setLoadingHistory(false);
-    }
-  }
+  const [fromMonth, setFromMonth] = useState(currentMonth);
+  const [fromYear, setFromYear] = useState(currentYear);
+  const [toMonth, setToMonth] = useState(currentMonth);
+  const [toYear, setToYear] = useState(currentYear);
 
   // handle delete functionality
   async function handleDelete(id) {
     try {
       await deactivateLink(id);
-
-      setHistory((prev) => prev.filter((h) => h.id !== id));
     } catch (err) {
       console.error(err);
     }
@@ -97,12 +63,12 @@ export default function FeedbackUrlGenerator() {
       setErrors({});
       setGenerating(true);
 
+      const periodLabel = `${getPeriodLabel(fromMonth, fromYear)} - ${getPeriodLabel(toMonth, toYear)}`;
       const response = await saveLink({
         employeeName,
         projectName,
         reviewerName,
-        month,
-        year,
+        periodLabel,
       });
 
       const linkId = response.data.id;
@@ -111,18 +77,6 @@ export default function FeedbackUrlGenerator() {
 
       setGeneratedUrl(url);
 
-      setHistory((prev) => [
-        {
-          id: linkId,
-          employeeName,
-          reviewerName,
-          projectName,
-          month,
-          year,
-          url,
-        },
-        ...prev.filter((h) => h.id !== linkId),
-      ]);
       setToast("Link generated Successfully");
     } catch (error) {
       console.error(error);
@@ -178,15 +132,14 @@ export default function FeedbackUrlGenerator() {
     setReviewerName("");
     setProjectName("");
     setEmployeeName("");
-    setMonth(currentMonth);
-    setYear(currentYear);
+    setFromMonth(currentMonth);
+    setFromYear(currentYear);
+    setToMonth(currentMonth);
+    setToYear(currentYear);
     setGeneratedUrl("");
     setErrors({});
-    setActiveTab("generate");
+    setToast("");
   };
-
-  const years = [];
-  for (let y = currentYear - 2; y <= currentYear + 1; y++) years.push(y);
 
   const inputStyle = (field) => ({
     ...styles.input,
@@ -214,7 +167,6 @@ export default function FeedbackUrlGenerator() {
         <p style={styles.topBarTitle}>{constants.feedback_url_generator}</p>
         <button
           onClick={() => {
-            setHistory([]);
             navigate("/", { replace: true });
           }}
           style={styles.navBtn}
@@ -232,36 +184,6 @@ export default function FeedbackUrlGenerator() {
             <p style={styles.cardSubtitle}>{constants.generateCaption}</p>
           </div>
 
-          {/* Tab strip */}
-          <div style={styles.strip}>
-            <button
-              style={{
-                ...styles.tab,
-                ...(activeTab === "generate" ? styles.tabActive : {}),
-              }}
-              onClick={() => {
-                setActiveTab("generate");
-              }}
-            >
-              {constants.createLink}
-            </button>
-            <button
-              style={{
-                ...styles.tab,
-                ...(activeTab === "history" ? styles.tabActive : {}),
-              }}
-              onClick={() => setActiveTab("history")}
-            >
-              {constants.previousGenerated}
-              {history.length > 0 && (
-                <span style={styles.badge}>{history.length}</span>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* ── Generate tab ── */}
-        {activeTab === "generate" && (
           <div style={styles.formBody}>
             <div style={styles.fieldGroup}>
               <label style={styles.label}>{constants.reviewerName}</label>
@@ -303,7 +225,7 @@ export default function FeedbackUrlGenerator() {
                   onFocus={() => setFocusField("employeeName")}
                   onBlur={() => setFocusField(null)}
                 />
-                {errors.employeeName && (
+                {errors.projectName && (
                   <span style={styles.errorMsg}>{errors.employeeName}</span>
                 )}
               </div>
@@ -314,7 +236,10 @@ export default function FeedbackUrlGenerator() {
                   type="text"
                   placeholder="Enter Project Name"
                   value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
+                  onChange={(e) => {
+                    setProjectName(e.target.value);
+                    setErrors((prev) => ({ ...prev, projectName: "" }));
+                  }}
                   onFocus={() => setFocusField("projectName")}
                   onBlur={() => setFocusField(null)}
                 />
@@ -329,39 +254,57 @@ export default function FeedbackUrlGenerator() {
             <div style={styles.fieldGroup}>
               <label style={styles.label}>{constants.reviewPeriod}</label>
               <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns:
-                    window.innerWidth < 560 ? "1fr" : "1fr 1fr",
-                  gap: 16,
-                }}
+                style={{ display: "flex", flexDirection: "column", gap: 14 }}
               >
-                <select
-                  style={selectStyle("month")}
-                  value={month}
-                  onChange={(e) => setMonth(Number(e.target.value))}
-                  onFocus={() => setFocusField("month")}
-                  onBlur={() => setFocusField(null)}
-                >
-                  {MONTHS.map((m, i) => (
-                    <option key={m} value={i}>
-                      {m}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  style={selectStyle("year")}
-                  value={year}
-                  onChange={(e) => setYear(Number(e.target.value))}
-                  onFocus={() => setFocusField("year")}
-                  onBlur={() => setFocusField(null)}
-                >
-                  {years.map((y) => (
-                    <option key={y} value={y}>
-                      {y}
-                    </option>
-                  ))}
-                </select>
+                {/* From */}
+                <div style={styles.fieldGroup}>
+                  <label
+                    style={{
+                      ...styles.label,
+                      fontSize: 12,
+                      color: "#6b7898",
+                      marginBottom: 6,
+                    }}
+                  >
+                    From
+                  </label>
+                  <PeriodRow
+                    monthVal={fromMonth}
+                    yearVal={fromYear}
+                    onMonthChange={setFromMonth}
+                    onYearChange={setFromYear}
+                    monthKey="fromMonth"
+                    yearKey="fromYear"
+                    setFocusField={setFocusField}
+                  />
+                </div>
+
+                {/* To */}
+                <div style={styles.fieldGroup}>
+                  <label
+                    style={{
+                      ...styles.label,
+                      fontSize: 12,
+                      color: "#6b7898",
+                      marginBottom: 6,
+                    }}
+                  >
+                    To
+                  </label>
+                  <PeriodRow
+                    monthVal={toMonth}
+                    yearVal={toYear}
+                    onMonthChange={setToMonth}
+                    onYearChange={setToYear}
+                    monthKey="toMonth"
+                    yearKey="toYear"
+                  />
+                </div>
+
+                {/* ── Period validation error ── */}
+                {errors.period && (
+                  <span style={styles.errorMsg}>{errors.period}</span>
+                )}
               </div>
             </div>
 
@@ -408,136 +351,7 @@ export default function FeedbackUrlGenerator() {
               </div>
             )}
           </div>
-        )}
-
-        {/* ── History tab ── */}
-        {activeTab === "history" && (
-          <div style={styles.formBody}>
-            {loadingHistory ? (
-              <p
-                style={{
-                  textAlign: "center",
-                  padding: "24px 0",
-                  color: "#6b7898",
-                  fontSize: 14,
-                }}
-              >
-                {constants.loadPreviousLink}
-              </p>
-            ) : history.length === 0 ? (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "40px 0",
-                  color: "#6b7898",
-                }}
-              >
-                <p style={{ fontSize: 14, marginBottom: 12 }}>
-                  No links generated yet
-                </p>
-                <button
-                  style={styles.navBtn}
-                  onClick={() => {
-                    // setActiveTab("generate");
-                    handleGenerate();
-                  }}
-                >
-                  Generate your first link
-                </button>
-              </div>
-            ) : (
-              <>
-                <div
-                  style={{
-                    maxHeight: "calc(100vh - 280px)", // leaves room for topbar + card header + tabs
-                    overflowY: "auto",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                    paddingRight: "4px", // prevents scrollbar from clipping content
-                  }}
-                >
-                  {history.map((item) => (
-                    <div key={item.id} style={styles.historyItem}>
-                      <div
-                        style={{
-                          flex: 1,
-                          minWidth: 0,
-                        }}
-                      >
-                        <p style={styles.historyName}>{item.employeeName}</p>
-                        <p style={styles.historyMeta}>
-                          {item.reviewerName}
-                          {item.projectName ? ` · ${item.projectName}` : ""}
-                          {" · "}
-                          {getPeriodLabel(item.month, item.year)}
-                        </p>
-                      </div>
-                      <div style={styles.historyActions}>
-                        <button
-                          style={styles.iconBtn}
-                          title="Copy link"
-                          onClick={() => handleCopy(item.url)}
-                        >
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <rect x="9" y="9" width="13" height="13" rx="2" />
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                          </svg>
-                        </button>
-                        <button
-                          style={styles.iconBtn}
-                          title="Remove"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6M14 11v6" />
-                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button style={styles.addNewBtn} onClick={handleAddNew}>
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                  {constants.anotherLink}
-                </button>
-              </>
-            )}
-          </div>
-        )}
+        </div>
       </div>
 
       {toast && <div style={styles.toast}>{toast}</div>}
