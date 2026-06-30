@@ -1,10 +1,27 @@
 import { BASE } from "../global/constants";
 
+// services/feedbackApi.js — example pattern, apply to saveLink, listLinks, deactivateLink
+function authHeaders() {
+  const token = localStorage.getItem("authToken");
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
+
 async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, {
-    headers: { "Content-Type": "application/json" },
     ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
   });
+  if (res.status === 401) {
+    localStorage.removeItem("authToken");
+    window.location.href = "/login";
+    throw new Error("Session expired. Please log in again.");
+  }
   const json = await res.json();
   if (!res.ok) throw new Error(json.message ?? "Request failed");
   return json;
@@ -21,6 +38,7 @@ async function request(path, options = {}) {
 export async function saveLink(payload) {
   return request("/api/links", {
     method: "POST",
+    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
 }
@@ -44,7 +62,9 @@ export async function listLinks(params = {}) {
   const qs = new URLSearchParams(
     Object.fromEntries(Object.entries(params).filter(([, v]) => v != null)),
   ).toString();
-  return request(`/api/links${qs ? `?${qs}` : ""}`);
+  return request(`/api/links${qs ? `?${qs}` : ""}`, {
+    headers: authHeaders(),
+  });
 }
 
 /**
@@ -53,7 +73,10 @@ export async function listLinks(params = {}) {
  * @param {string} id
  */
 export async function deactivateLink(id) {
-  return request(`/api/links/${id}`, { method: "DELETE" });
+  return request(`/api/links/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
 }
 
 /* ── Responses ─────────────────────────────────────────────────────────────── */
@@ -91,7 +114,9 @@ export async function listResponses(params = {}) {
   const qs = new URLSearchParams(
     Object.fromEntries(Object.entries(params).filter(([, v]) => v != null)),
   ).toString();
-  return request(`/api/responses${qs ? `?${qs}` : ""}`);
+  return request(`/api/responses${qs ? `?${qs}` : ""}`, {
+    headers: authHeaders(),
+  });
 }
 
 /**
@@ -100,5 +125,7 @@ export async function listResponses(params = {}) {
  * @param {string} linkId
  */
 export async function fetchSummary(linkId) {
-  return request(`/api/responses/summary/${encodeURIComponent(linkId)}`);
+  return request(`/api/responses/summary/${encodeURIComponent(linkId)}`, {
+    headers: authHeaders(),
+  });
 }
