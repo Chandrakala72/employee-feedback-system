@@ -1,48 +1,72 @@
 import { useState, useRef, useEffect } from "react";
 import { styles } from "../styles/SearchableSelect.styles";
+import { SiUbuntu } from "react-icons/si";
 
-export function SearchableSelect({ value, onChange, options, placeholder }) {
+export function SearchableSelect({
+  value,
+  onChange,
+  options,
+  placeholder,
+  disabled,
+}) {
   const [query, setQuery] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   const [open, setOpen] = useState(false);
   const [hoveredOption, setHoveredOption] = useState(null);
   const ref = useRef();
 
-  const isActive = !!value;
-
-  const filtered = options.filter((o) =>
-    o.toLowerCase().includes(query.toLowerCase()),
+  const normalized = options.map((o) =>
+    typeof o === "string" ? { value: o, name: o, subtitle: null } : o,
   );
+
+  const filtered = normalized.filter(
+    (o) =>
+      o.name.toLowerCase().includes(query.toLowerCase()) ||
+      (o.subtitle && o.subtitle.toLowerCase().includes(query.toLowerCase())),
+  );
+
+  const selectedOption = normalized.find((o) => o.value === value);
+
+  const isActive = !!selectedOption;
 
   useEffect(() => {
     const handler = (e) => {
-      if (!ref.current?.contains(e.target)) setOpen(false);
+      if (!ref.current?.contains(e.target)) {
+        setOpen(false);
+        setIsTyping(false);
+        setQuery("");
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   function getOptionStyle(o) {
-    if (value === o) return { ...styles.optionBase, ...styles.optionSelected };
-    if (hoveredOption === o)
+    if (value === o.value)
+      return { ...styles.optionBase, ...styles.optionSelected };
+    if (hoveredOption === o.value)
       return { ...styles.optionBase, ...styles.optionHover };
     return { ...styles.optionBase, ...styles.optionDefault };
   }
 
+  const displayValue = isTyping ? query : selectedOption?.name || "";
+
   return (
     <div ref={ref} style={styles.wrapper}>
       <input
-        value={value || query}
+        value={displayValue}
         onChange={(e) => {
+          setIsTyping(true);
           setQuery(e.target.value);
-          onChange("");
+          if (value) onChange("");
           setOpen(true);
         }}
         onFocus={() => setOpen(true)}
         placeholder={placeholder}
         style={styles.input(isActive)}
+        disabled={disabled}
       />
 
-      {/* Chevron */}
       <svg
         style={styles.chevron(isActive)}
         width="16"
@@ -57,14 +81,13 @@ export function SearchableSelect({ value, onChange, options, placeholder }) {
         <polyline points="6 9 12 15 18 9" />
       </svg>
 
-      {/* Dropdown */}
-      {open && (
+      {open && !disabled && (
         <div style={styles.dropdown}>
-          {/* Reset / placeholder row */}
           <div
             onClick={() => {
               onChange("");
               setQuery("");
+              setIsTyping(false);
               setOpen(false);
             }}
             style={{
@@ -85,17 +108,40 @@ export function SearchableSelect({ value, onChange, options, placeholder }) {
           ) : (
             filtered.map((o) => (
               <div
-                key={o}
+                key={o.value}
                 onClick={() => {
-                  onChange(o);
+                  onChange(o.value);
                   setQuery("");
+                  setIsTyping(false);
                   setOpen(false);
                 }}
                 style={getOptionStyle(o)}
-                onMouseEnter={() => setHoveredOption(o)}
+                onMouseEnter={() => setHoveredOption(o.value)}
                 onMouseLeave={() => setHoveredOption(null)}
               >
-                {o}
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    lineHeight: 1.3,
+                    textAlign: "left",
+                  }}
+                >
+                  {o.name}
+                </div>
+                {o.subtitle && (
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#8b93ab",
+                      lineHeight: 1.3,
+                      marginTop: 2,
+                      textAlign: "left",
+                    }}
+                  >
+                    {o.subtitle}
+                  </div>
+                )}
               </div>
             ))
           )}

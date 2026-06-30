@@ -14,6 +14,7 @@ import { Spinner } from "../components/Spinner";
 import { styles } from "../styles/FeedbackDashboard_styles";
 import { SearchableSelect } from "../components/SearchableSelect";
 import { useNavigate } from "react-router-dom";
+import { fetchEmployeeProjects } from "../services/employeeApi";
 
 /* ─── Main Dashboard ───────────────────────────────────────────────────────── */
 export default function FeedbackDashboard() {
@@ -30,6 +31,8 @@ export default function FeedbackDashboard() {
   const [sortKey, setSortKey] = useState("submitted_at");
   const [sortDir, setSortDir] = useState("desc");
   const [page, setPage] = useState(1);
+  const [empProjects, setEmpProjects] = useState([]);
+  const [loadingEmpProjects, setLoadingEmpProjects] = useState(false);
   const PER_PAGE = 12;
 
   /* ── Fetch all responses ──────────────────────────────────────────────── */
@@ -47,19 +50,51 @@ export default function FeedbackDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    setLoadingEmpProjects(true);
+    fetchEmployeeProjects()
+      .then(setEmpProjects)
+      .catch(console.error)
+      .finally(() => setLoadingEmpProjects(false));
+  }, []);
+
+  useEffect(() => {
+    setEmpFilter("");
+    setPage(1);
+  }, [projectFilter]);
+
   /* ── Derived filter options ─────────────────────────────────────────── */
+
   const employees = useMemo(
     () =>
       [
-        ...new Set(responses.map((r) => r.employee_name).filter(Boolean)),
-      ].sort(),
-    [responses],
+        ...new Map(
+          empProjects
+            .filter((r) => !projectFilter || r.projectName === projectFilter)
+            .map((r) => [
+              r.employeeGuid, // ✅ unique key now
+              {
+                value: r.employeeGuid, // ✅ unique value
+                name: r.employeeName,
+                subtitle: r.employeeEmail,
+              },
+            ]),
+        ).values(),
+      ].sort((a, b) => a.name.localeCompare(b.name)),
+    [empProjects, projectFilter],
   );
   const projects = useMemo(
     () =>
-      [...new Set(responses.map((r) => r.project_name).filter(Boolean))].sort(),
-    [responses],
+      [
+        ...new Map(
+          empProjects.map((r) => [r.projectGuid, r.projectName]),
+        ).entries(),
+      ]
+        .map(([, name]) => name)
+        .sort(),
+    [empProjects],
   );
+
   const periods = useMemo(
     () =>
       [...new Set(responses.map((r) => r.period_label).filter(Boolean))].sort(),
@@ -92,13 +127,6 @@ export default function FeedbackDashboard() {
 
   const hasFilters = empFilter || projectFilter || periodFilter;
 
-  function handleFilter(setter) {
-    return (e) => {
-      setter(e.target.value);
-      setPage(1);
-    };
-  }
-
   function toggleSort(key) {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
     else {
@@ -125,12 +153,6 @@ export default function FeedbackDashboard() {
       </div>
 
       <div style={styles.pageHeader}>
-        {/* ── Page heading ── */}
-        {/* <div style={{ marginBottom: 22 }}>
-          <h1 style={styles.pageHeading}>{constants.feedback_responses}</h1>
-          <p style={styles.pageCaption}>{constants.feedback_response_info}</p>
-        </div> */}
-
         {/* ── Filters + sort ── */}
         <div style={styles.filterRow}>
           <div style={styles.filter}>
@@ -187,14 +209,14 @@ export default function FeedbackDashboard() {
                 value: projectFilter,
                 setter: setProjectFilter,
                 options: projects,
-                ph: "All projects",
+                ph: loadingEmpProjects ? "Loading..." : "All projects",
               },
               {
                 label: "Employee",
                 value: empFilter,
                 setter: setEmpFilter,
                 options: employees,
-                ph: "All employees",
+                ph: !projectFilter ? "Select project first" : "All employees",
               },
 
               {
@@ -212,20 +234,12 @@ export default function FeedbackDashboard() {
                   onChange={setter}
                   options={options}
                   placeholder={ph}
+                  disabled={label === "Employee" && !projectFilter}
                 />
               </div>
             ))}
           </div>
         </div>
-
-        {/* ── Response count ── */}
-        {/* {!loading && !error && (
-          <p style={styles.responseCount}>
-            {filtered.length} response{filtered.length !== 1 ? "s" : ""}
-            {hasFilters ? " matched" : " total"}
-          </p>
-        )} */}
-
         {/* ── Cards grid ── */}
         {loading ? (
           <Spinner text="Loading responses…" />

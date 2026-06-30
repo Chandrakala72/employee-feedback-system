@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import myLogo from "../assets/logo.png";
 import { styles } from "../styles/FeedbackURLGeneratorStyles";
 import "../styles/FeedbackURLGenerate.css";
@@ -7,6 +7,8 @@ import { constants, MONTHS } from "../global/constants";
 import { getPeriodLabel, generateUrl } from "../global/helper";
 import { useNavigate } from "react-router-dom";
 import { PeriodRow } from "../components/PeriodRow";
+import { fetchEmployeeProjects } from "../services/employeeApi";
+import { SearchableSelect } from "../components/SearchableSelect";
 
 const currentDate = new Date();
 const currentMonth = currentDate.getMonth();
@@ -30,6 +32,50 @@ export default function FeedbackUrlGenerator() {
   const [fromYear, setFromYear] = useState(currentYear);
   const [toMonth, setToMonth] = useState(currentMonth);
   const [toYear, setToYear] = useState(currentYear);
+  const [empProjects, setEmpProjects] = useState([]); // raw data from source DB
+  const [loadingEmpProjects, setLoadingEmpProjects] = useState(false);
+
+  const projectOptions = useMemo(
+    () =>
+      [
+        ...new Map(
+          empProjects.map((r) => [
+            r.projectName,
+            { guid: r.projectGuid, name: r.projectName },
+          ]),
+        ).values(),
+      ].sort((a, b) => a.name.localeCompare(b.name)),
+    [empProjects],
+  );
+
+  const employeeOptions = useMemo(
+    () =>
+      projectName
+        ? [
+          ...new Map(
+            empProjects
+              .filter((r) => r.projectName === projectName)
+              .map((r) => [
+                r.employeeName,
+                {
+                  guid: r.employeeGuid,
+                  name: r.employeeName,
+                  subtitle: r.employeeEmail,
+                },
+              ]),
+          ).values(),
+        ].sort((a, b) => a.name.localeCompare(b.name))
+        : [],
+    [empProjects, projectName],
+  );
+
+  useEffect(() => {
+    setLoadingEmpProjects(true);
+    fetchEmployeeProjects()
+      .then(setEmpProjects)
+      .catch(console.error)
+      .finally(() => setLoadingEmpProjects(false));
+  }, []);
 
   // handle delete functionality
   async function handleDelete(id) {
@@ -213,17 +259,18 @@ export default function FeedbackUrlGenerator() {
             >
               <div style={styles.fieldGroup}>
                 <label style={styles.label}>{constants.projectName}</label>
-                <input
-                  style={inputStyle("projectName")}
-                  type="text"
-                  placeholder="Enter Project Name"
+                <SearchableSelect
                   value={projectName}
-                  onChange={(e) => {
-                    setProjectName(e.target.value);
+                  onChange={(val) => {
+                    setProjectName(val);
+                    setEmployeeName("");
                     setErrors((prev) => ({ ...prev, projectName: "" }));
                   }}
-                  onFocus={() => setFocusField("projectName")}
-                  onBlur={() => setFocusField(null)}
+                  options={projectOptions.map((p) => p.name)}
+                  placeholder={
+                    loadingEmpProjects ? "Loading..." : "Select Project"
+                  }
+                  disabled={loadingEmpProjects}
                 />
                 {errors.projectName && (
                   <span style={styles.errorMsg}>{errors.projectName}</span>
@@ -231,19 +278,19 @@ export default function FeedbackUrlGenerator() {
               </div>
               <div style={styles.fieldGroup}>
                 <label style={styles.label}>{constants.employeeName}</label>
-                <input
-                  style={inputStyle("employeeName")}
-                  type="text"
-                  placeholder="Enter Employee Name"
+                <SearchableSelect
                   value={employeeName}
-                  onChange={(e) => {
-                    setEmployeeName(e.target.value);
+                  onChange={(val) => {
+                    setEmployeeName(val);
                     setErrors((prev) => ({ ...prev, employeeName: "" }));
                   }}
-                  onFocus={() => setFocusField("employeeName")}
-                  onBlur={() => setFocusField(null)}
+                  options={employeeOptions}
+                  placeholder={
+                    !projectName ? "Select project first" : "Select Employee"
+                  }
+                  disabled={!projectName || loadingEmpProjects}
                 />
-                {errors.projectName && (
+                {errors.employeeName && (
                   <span style={styles.errorMsg}>{errors.employeeName}</span>
                 )}
               </div>

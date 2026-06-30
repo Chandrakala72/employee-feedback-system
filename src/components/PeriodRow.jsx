@@ -14,7 +14,7 @@ export const PeriodRow = ({
   onYearChange,
   monthKey,
   yearKey,
-  setFocusField
+  setFocusField,
 }) => (
   <div
     style={{
