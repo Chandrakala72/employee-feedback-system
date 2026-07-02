@@ -27,13 +27,28 @@ export const styles = {
     top: 0,
     zIndex: 200,
     boxShadow: "0 1px 3px rgba(20,40,70,0.06)",
-    gap: 12,                     // ← keeps logo/title/btn from colliding
+    gap: 12, // ← keeps logo/title/btn from colliding
   },
 
   logo: {
     height: 26,
     objectFit: "contain",
-    flexShrink: 0,               // ← never squish the logo
+    flexShrink: 0, // ← never squish the logo
+  },
+  
+  logoutBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "8px 16px",
+    borderRadius: 8,
+    border: "1px solid #b3261e",
+    background: "#fff",
+    color: "#b3261e",
+    fontWeight: 600,
+    fontSize: 13,
+    cursor: "pointer",
+    transition: "background 0.15s, border-color 0.15s",
   },
 
   dashboardTitle: {
@@ -41,8 +56,8 @@ export const styles = {
     fontWeight: 600,
     color: "#1a2340",
     margin: 0,
-    flex: 1,                     // ← takes available space
-    minWidth: 0,                 // ← allows text-overflow to work
+    flex: 1, // ← takes available space
+    minWidth: 0, // ← allows text-overflow to work
     textAlign: "center",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -58,7 +73,7 @@ export const styles = {
     fontWeight: 600,
     fontSize: 14,
     cursor: "pointer",
-    flexShrink: 0,               // ← never shrink the button
+    flexShrink: 0, // ← never shrink the button
     whiteSpace: "nowrap",
   },
 
@@ -69,7 +84,7 @@ export const styles = {
   },
 
   pageHeading: {
-    fontSize: "clamp(17px, 2vw, 21px)",   // ← fluid scale
+    fontSize: "clamp(17px, 2vw, 21px)", // ← fluid scale
     fontWeight: 700,
     margin: "0 0 4px",
     letterSpacing: -0.3,
@@ -170,7 +185,7 @@ export const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     marginTop: 20,
-    flexWrap: "wrap",             // ← stacks on narrow screens
+    flexWrap: "wrap", // ← stacks on narrow screens
     gap: 10,
   },
 

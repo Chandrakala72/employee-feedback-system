@@ -72,7 +72,7 @@ export default function FeedbackUrlGenerator() {
   useEffect(() => {
     setLoadingEmpProjects(true);
     fetchEmployeeProjects()
-      .then(setEmpProjects)
+      .then((json) => setEmpProjects(json.data || []))
       .catch(console.error)
       .finally(() => setLoadingEmpProjects(false));
   }, []);
@@ -211,14 +211,39 @@ export default function FeedbackUrlGenerator() {
           </div>
         </div>
         <p style={styles.topBarTitle}>{constants.feedback_url_generator}</p>
-        <button
-          onClick={() => {
-            navigate("/", { replace: true });
-          }}
-          style={styles.navBtn}
-        >
-          {constants.view_dashboard}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            onClick={() => {
+              navigate("/", { replace: true });
+            }}
+            style={styles.navBtn}
+          >
+            {constants.view_dashboard}
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("authToken");
+              localStorage.removeItem("authUser");
+              navigate("/login", { replace: true });
+            }}
+            style={styles.logoutBtn}
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2v10" />
+              <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+            </svg>
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Main card */}
@@ -296,15 +321,15 @@ export default function FeedbackUrlGenerator() {
               </div>
             </div>
 
-            <div style={styles.divider} />
+            {/* <div style={styles.divider} /> */}
 
             <div style={styles.fieldGroup}>
               <label style={styles.label}>{constants.reviewPeriod}</label>
               <div
-                style={{ display: "flex", flexDirection: "column", gap: 14 }}
+                style={{ display: "flex", flexDirection: "row", gap: 14, width: '100%' }}
               >
                 {/* From */}
-                <div style={styles.fieldGroup}>
+                <div style={{ ...styles.fieldGroup, width: '50%' }}>
                   <label
                     style={{
                       ...styles.label,
@@ -327,7 +352,7 @@ export default function FeedbackUrlGenerator() {
                 </div>
 
                 {/* To */}
-                <div style={styles.fieldGroup}>
+                <div style={{ ...styles.fieldGroup, width: '50%' }}>
                   <label
                     style={{
                       ...styles.label,
@@ -354,7 +379,7 @@ export default function FeedbackUrlGenerator() {
                 )}
               </div>
             </div>
-
+            <div style={styles.divider} />
             <button
               style={{
                 ...styles.generateBtn,

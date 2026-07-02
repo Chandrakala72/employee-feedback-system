@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { styles } from "../styles/SearchableSelect.styles";
-import { SiUbuntu } from "react-icons/si";
 
 export function SearchableSelect({
   value,
@@ -8,6 +7,7 @@ export function SearchableSelect({
   options,
   placeholder,
   disabled,
+  multiple = false,
 }) {
   const [query, setQuery] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -15,19 +15,30 @@ export function SearchableSelect({
   const [hoveredOption, setHoveredOption] = useState(null);
   const ref = useRef();
 
-  const normalized = options.map((o) =>
-    typeof o === "string" ? { value: o, name: o, subtitle: null } : o,
-  );
-
+  const normalized = options.map((o) => {
+    if (typeof o === "string") {
+      return { value: o, name: o, subtitle: null };
+    }
+    return {
+      value: o.value ?? o.id ?? o.name,
+      name: o.name ?? o.label ?? String(o.value ?? o.id),
+      subtitle: o.subtitle ?? null,
+    };
+  })
   const filtered = normalized.filter(
     (o) =>
       o.name.toLowerCase().includes(query.toLowerCase()) ||
       (o.subtitle && o.subtitle.toLowerCase().includes(query.toLowerCase())),
   );
 
-  const selectedOption = normalized.find((o) => o.value === value);
+  // Normalize value into an array for multi mode, keep as-is for single mode
+  const selectedValues = multiple ? (Array.isArray(value) ? value : []) : value;
 
-  const isActive = !!selectedOption;
+  const selectedOptions = multiple
+    ? normalized.filter((o) => selectedValues.includes(o.value))
+    : normalized.find((o) => o.value === value);
+
+  const isActive = multiple ? selectedValues.length > 0 : !!selectedOptions;
 
   useEffect(() => {
     const handler = (e) => {
@@ -41,15 +52,50 @@ export function SearchableSelect({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  function isSelected(o) {
+    return multiple ? selectedValues.includes(o.value) : value === o.value;
+  }
+
   function getOptionStyle(o) {
-    if (value === o.value)
+    if (isSelected(o))
       return { ...styles.optionBase, ...styles.optionSelected };
     if (hoveredOption === o.value)
       return { ...styles.optionBase, ...styles.optionHover };
     return { ...styles.optionBase, ...styles.optionDefault };
   }
 
-  const displayValue = isTyping ? query : selectedOption?.name || "";
+  function handleOptionClick(o) {
+    if (multiple) {
+      const next = selectedValues.includes(o.value)
+        ? selectedValues.filter((v) => v !== o.value)
+        : [...selectedValues, o.value];
+      onChange(next);
+      // keep dropdown open for multi-select so user can pick more
+      setQuery("");
+    } else {
+      onChange(o.value);
+      setQuery("");
+      setIsTyping(false);
+      setOpen(false);
+    }
+  }
+
+  function handleClear() {
+    if (multiple) {
+      onChange([]);
+    } else {
+      onChange("");
+    }
+    setQuery("");
+    setIsTyping(false);
+    setOpen(false);
+  }
+
+  const displayValue = isTyping
+    ? query
+    : multiple
+      ? selectedOptions.map((o) => o.name).join(", ")
+      : selectedOptions?.name || "";
 
   return (
     <div ref={ref} style={styles.wrapper}>
@@ -58,13 +104,14 @@ export function SearchableSelect({
         onChange={(e) => {
           setIsTyping(true);
           setQuery(e.target.value);
-          if (value) onChange("");
+          if (!multiple && value) onChange("");
           setOpen(true);
         }}
         onFocus={() => setOpen(true)}
         placeholder={placeholder}
         style={styles.input(isActive)}
         disabled={disabled}
+        readOnly={multiple}
       />
 
       <svg
@@ -84,12 +131,7 @@ export function SearchableSelect({
       {open && !disabled && (
         <div style={styles.dropdown}>
           <div
-            onClick={() => {
-              onChange("");
-              setQuery("");
-              setIsTyping(false);
-              setOpen(false);
-            }}
+            onClick={handleClear}
             style={{
               ...styles.optionBase,
               ...styles.optionPlaceholder,
@@ -100,7 +142,7 @@ export function SearchableSelect({
             onMouseEnter={() => setHoveredOption("__placeholder__")}
             onMouseLeave={() => setHoveredOption(null)}
           >
-            {placeholder}
+            {multiple ? "Clear all" : placeholder}
           </div>
 
           {filtered.length === 0 ? (
@@ -109,39 +151,49 @@ export function SearchableSelect({
             filtered.map((o) => (
               <div
                 key={o.value}
-                onClick={() => {
-                  onChange(o.value);
-                  setQuery("");
-                  setIsTyping(false);
-                  setOpen(false);
+                onClick={() => handleOptionClick(o)}
+                style={{
+                  ...getOptionStyle(o),
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
                 }}
-                style={getOptionStyle(o)}
                 onMouseEnter={() => setHoveredOption(o.value)}
                 onMouseLeave={() => setHoveredOption(null)}
               >
-                <div
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 500,
-                    lineHeight: 1.3,
-                    textAlign: "left",
-                  }}
-                >
-                  {o.name}
-                </div>
-                {o.subtitle && (
+                {multiple && (
+                  <input
+                    type="checkbox"
+                    checked={isSelected(o)}
+                    readOnly
+                    style={{ pointerEvents: "none" }}
+                  />
+                )}
+                <div style={{ flex: 1 }}>
                   <div
                     style={{
-                      fontSize: 11,
-                      color: "#8b93ab",
+                      fontSize: 14,
+                      fontWeight: 500,
                       lineHeight: 1.3,
-                      marginTop: 2,
                       textAlign: "left",
                     }}
                   >
-                    {o.subtitle}
+                    {o.name}
                   </div>
-                )}
+                  {o.subtitle && (
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: "#8b93ab",
+                        lineHeight: 1.3,
+                        marginTop: 2,
+                        textAlign: "left",
+                      }}
+                    >
+                      {o.subtitle}
+                    </div>
+                  )}
+                </div>
               </div>
             ))
           )}

@@ -15,6 +15,7 @@ import { styles } from "../styles/FeedbackDashboard_styles";
 import { SearchableSelect } from "../components/SearchableSelect";
 import { useNavigate } from "react-router-dom";
 import { fetchEmployeeProjects } from "../services/employeeApi";
+import { listResponses } from "../services/feedbackApi";
 
 /* ─── Main Dashboard ───────────────────────────────────────────────────────── */
 export default function FeedbackDashboard() {
@@ -25,7 +26,7 @@ export default function FeedbackDashboard() {
   const [selectedRow, setSelectedRow] = useState(null);
 
   // Filters
-  const [empFilter, setEmpFilter] = useState("");
+  const [empFilter, setEmpFilter] = useState([]);
   const [projectFilter, setProjectFilter] = useState("");
   const [periodFilter, setPeriodFilter] = useState("");
   const [sortKey, setSortKey] = useState("submitted_at");
@@ -38,10 +39,7 @@ export default function FeedbackDashboard() {
   /* ── Fetch all responses ──────────────────────────────────────────────── */
   useEffect(() => {
     setLoading(true);
-    fetch(`${BASE}/api/responses?limit=500`, {
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((r) => r.json())
+    listResponses({ limit: 500 })
       .then((json) => {
         if (!json.success) throw new Error(json.message);
         setResponses(json.data || []);
@@ -53,13 +51,13 @@ export default function FeedbackDashboard() {
   useEffect(() => {
     setLoadingEmpProjects(true);
     fetchEmployeeProjects()
-      .then(setEmpProjects)
+      .then((json) => setEmpProjects(json.data || []))
       .catch(console.error)
       .finally(() => setLoadingEmpProjects(false));
   }, []);
 
   useEffect(() => {
-    setEmpFilter("");
+    setEmpFilter([]);
     setPage(1);
   }, [projectFilter]);
 
@@ -144,12 +142,37 @@ export default function FeedbackDashboard() {
         <span style={styles.dashboardTitle}>
           {constants.feedback_dashboard}
         </span>
-        <button
-          onClick={() => navigate("/feedback-urls", { replace: true })}
-          style={styles.navBtn}
-        >
-          {constants.generateLinkTitle}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            onClick={() => navigate("/feedback-urls", { replace: true })}
+            style={styles.navBtn}
+          >
+            {constants.generateLinkTitle}
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("authToken");
+              localStorage.removeItem("authUser");
+              navigate("/login", { replace: true });
+            }}
+            style={styles.logoutBtn}
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2v10" />
+              <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+            </svg>
+            Logout
+          </button>
+        </div>
       </div>
 
       <div style={styles.pageHeader}>
@@ -189,7 +212,7 @@ export default function FeedbackDashboard() {
               {hasFilters && (
                 <button
                   onClick={() => {
-                    setEmpFilter("");
+                    setEmpFilter([]);
                     setProjectFilter("");
                     setPeriodFilter("");
                     setPage(1);
@@ -214,7 +237,10 @@ export default function FeedbackDashboard() {
               {
                 label: "Employee",
                 value: empFilter,
-                setter: setEmpFilter,
+                setter: ((val) => {
+                  setEmpFilter(val);
+                  setErrors((prev) => ({ ...prev, employeeName: "" }));
+                }),
                 options: employees,
                 ph: !projectFilter ? "Select project first" : "All employees",
               },
@@ -235,6 +261,7 @@ export default function FeedbackDashboard() {
                   options={options}
                   placeholder={ph}
                   disabled={label === "Employee" && !projectFilter}
+                  multiple={label === "Employee" && projectFilter}
                 />
               </div>
             ))}

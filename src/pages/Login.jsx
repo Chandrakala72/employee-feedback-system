@@ -5,9 +5,8 @@ import myLogo from "../assets/logo.png";
 import { C } from "../global/constants";
 
 const SAMPLE_CARDS = [
-    { name: "Arjun Mehta", project: "Web Store", score: 5 },
-    { name: "Priya Nair", project: "FNB App", score: 4 },
-    { name: "Karthik R", project: "TimeSheet", score: 5 },
+    { name: "John Doe", project: "Excellent", score: 5, gender: "Male" },
+    { name: "Jane Doe", project: "Good", score: 4, gender: "Female" },
 ];
 
 export default function Login() {
@@ -34,6 +33,22 @@ export default function Login() {
         }
     }
 
+    function AvatarIcon({ gender }) {
+        if (gender === "Female") {
+            return (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff">
+                    <circle cx="12" cy="6" r="5" />
+                    <path d="M12 12l-5 8h3l1-3h2l1 3h3z" />
+                </svg>
+            );
+        }
+        return (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff">
+                <circle cx="12" cy="6" r="5" />
+                <path d="M8 22V13a4 4 0 0 1 8 0v9h-3v-6h-2v6z" />
+            </svg>
+        );
+    }
     return (
         <div style={styles.page}>
             {/* ── Left brand panel ── */}
@@ -44,13 +59,12 @@ export default function Login() {
 
                 <div style={styles.brandMid}>
                     <h1 style={styles.brandHeadline}>
-                        Every review,
+                        Where client feedback
                         <br />
-                        one quiet thread.
+                        becomes better work.
                     </h1>
                     <p style={styles.brandSub}>
-                        Collect honest feedback, track it by project,
-                        and keep the people decisions clear.
+                        Collect it, track it by project, and act on it — so quality keeps improving with every round.
                     </p>
                 </div>
 
@@ -64,8 +78,12 @@ export default function Login() {
                                 animationDelay: `${i * 0.12 + 0.15}s`,
                             }}
                         >
-                            <div style={styles.miniAvatar}>
-                                {c.name.split(" ").map((p) => p[0]).join("").slice(0, 2)}
+                            <div style={{
+                                ...styles.miniAvatar,
+                                // background: c.gender === "Female" ? "#E64980" : "#3B5BDB",
+                                fontSize: 16,
+                            }}>
+                                {c.gender === "Female" ? "👧" : "👦"}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <p style={styles.miniName}>{c.name}</p>
@@ -140,10 +158,6 @@ export default function Login() {
                     <button type="submit" disabled={loading} style={styles.submitBtn}>
                         {loading ? "Signing in…" : "Sign in"}
                     </button>
-
-                    <p style={styles.footnote}>
-                        Trouble signing in? Contact your administrator.
-                    </p>
                 </form>
             </div>
 

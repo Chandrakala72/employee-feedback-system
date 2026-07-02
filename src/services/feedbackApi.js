@@ -9,11 +9,13 @@ function authHeaders() {
   };
 }
 
-async function request(path, options = {}) {
+async function request(path, options = {}, { auth = true } = {}) {
+  const token = localStorage.getItem("authToken");
   const res = await fetch(`${BASE}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      ...(auth && token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {}),
     },
   });
@@ -114,9 +116,7 @@ export async function listResponses(params = {}) {
   const qs = new URLSearchParams(
     Object.fromEntries(Object.entries(params).filter(([, v]) => v != null)),
   ).toString();
-  return request(`/api/responses${qs ? `?${qs}` : ""}`, {
-    headers: authHeaders(),
-  });
+  return request(`/api/responses${qs ? `?${qs}` : ""}`);
 }
 
 /**

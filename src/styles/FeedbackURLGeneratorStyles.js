@@ -73,6 +73,20 @@ export const styles = {
     flexShrink: 0, // never shrink the nav button
     whiteSpace: "nowrap",
   },
+  logoutBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "8px 16px",
+    borderRadius: 8,
+    border: "1px solid #b3261e",
+    background: "#fff",
+    color: "#b3261e",
+    fontWeight: 600,
+    fontSize: 13,
+    cursor: "pointer",
+    transition: "background 0.15s, border-color 0.15s",
+  },
 
   // ─── Content ───────────────────────────────────────────────
   contentWrapper: {
@@ -144,6 +158,9 @@ export const styles = {
     flexDirection: "column",
     gap: "2px",
   },
+  // fieldRow: {
+  //   flexDirection:'row'
+  // },
   label: {
     fontSize: "13px",
     fontWeight: "600",
@@ -222,6 +239,8 @@ export const styles = {
     transition: "background-color 0.15s, transform 0.1s",
     letterSpacing: "0.01em",
     marginTop: "4px",
+    width: "50%",
+    alignSelf: "center",
   },
   generateBtnHover: { backgroundColor: "#2f4abf" },
   generateBtnActive: { transform: "scale(0.98)" },
