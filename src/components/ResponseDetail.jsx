@@ -127,7 +127,10 @@ export const ResponseDetail = ({ row, onClose }) => {
                 {row.reviewer_name
                   ? `Reviewed by ${row.reviewer_name}`
                   : "Anonymous reviewer"}
-                {row.project_name ? ` · ${row.project_name}` : ""}
+                {row.client_name
+                  ? `, ${row.client_name}`
+                  : ""}
+                {row.project_name ? ` -  ${row.project_name}` : ""}
               </p>
             </div>
           </div>

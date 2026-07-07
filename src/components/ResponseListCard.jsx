@@ -7,10 +7,10 @@ export function ResponseCard({ row, onClick }) {
   const { color, bg, border } = ratingColor(row.rating_overall);
   const date = row.submitted_at
     ? new Date(row.submitted_at).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })
     : "—";
 
   const miniRatings = [
@@ -77,6 +77,7 @@ export function ResponseCard({ row, onClick }) {
               }}
             >
               {row.reviewer_name ? `by ${row.reviewer_name}` : "Anonymous"}
+              {row.client_name ? `, ${row.client_name}` : ""}
             </p>
           </div>
         </div>

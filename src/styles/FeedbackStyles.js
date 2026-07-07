@@ -49,6 +49,62 @@ export const styles = {
     transform: "rotate(45deg)",
   },
 
+  metaRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 16,
+    marginTop: 5,
+    paddingTop: 5,
+    borderTop: "0.5px solid #c7cbdb",
+  },
+
+  metaReviewer: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  metaAvatar: {
+    width: 24,
+    height: 24,
+    borderRadius: "50%",
+    background: "#CECBF6",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 11,
+    fontWeight: 500,
+    color: "#26215C",
+  },
+
+  metaClient: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+  },
+
+  metaIcon: {
+    fontSize: 15,
+    color: "#8B93AB",
+  },
+
+  metaText: {
+    fontSize: 13,
+    color: "#6B7898",
+  },
+
+  metaStrong: {
+    fontWeight: 500,
+    color: "#3B4260",
+  },
+
+  metaDot: {
+    width: 3,
+    height: 3,
+    borderRadius: "50%",
+    background: "#AAB0C8",
+  },
+
   brandName: {
     fontSize: 14,
     fontWeight: 600,
@@ -73,6 +129,7 @@ export const styles = {
     padding: "20px 24px",
     border: "1px solid #e3e7ef",
     boxShadow: "0 18px 40px -24px rgba(20, 40, 70, 0.3)",
+    marginTop: 8,
   },
 
   title: {

@@ -29,6 +29,7 @@ export default function FeedbackForm({ onSubmit }) {
   const [wins, setWins] = useState("");
   const [improve, setImprove] = useState("");
   const [reviewer, setReviewer] = useState("");
+  const [clientName, setClientName] = useState("");
   const ratingsRef = useRef(null);
   const ratedCount = Object.values(ratings).filter(Boolean).length;
   const overallValid = !!ratings.overall;
@@ -45,6 +46,7 @@ export default function FeedbackForm({ onSubmit }) {
       .then((res) => {
         setLinkMeta(res.data);
         setReviewer(res.data.reviewer_name || "");
+        setClientName(res.data.client_name || "");
         setLinkError("");
       })
       .catch((err) => {
@@ -72,6 +74,7 @@ export default function FeedbackForm({ onSubmit }) {
     const payload = {
       linkId,
       reviewerName: reviewer.trim() || null,
+      clientName: clientName.trim() || null,
       ratings: {
         technical: ratings.technical ?? null,
         communication: ratings.communication ?? null,
@@ -91,7 +94,7 @@ export default function FeedbackForm({ onSubmit }) {
       if (typeof onSubmit === "function") {
         try {
           onSubmit(payload);
-        } catch (_) {}
+        } catch (_) { }
       }
 
       setSubmitted(true);
@@ -111,6 +114,7 @@ export default function FeedbackForm({ onSubmit }) {
     setWins("");
     setImprove("");
     setReviewer("");
+    setClientName("");
   }
 
   if (loading) {
@@ -168,6 +172,24 @@ export default function FeedbackForm({ onSubmit }) {
           )}
         </header>
 
+        {!submitted && (reviewer || clientName) && (
+          <div style={styles.metaRow}>
+            {reviewer && (
+              <div style={styles.metaReviewer}>
+                <span style={styles.metaAvatar}>{reviewer[0]}</span>
+                <span style={styles.metaText}>
+                  Reviewed by <span style={styles.metaStrong}>{reviewer}</span>
+                </span>
+              </div>
+            )}
+            {clientName && (
+              <div style={styles.metaClient}>
+                <i className="ti ti-building" style={styles.metaIcon} />
+                <span style={styles.metaText}>{clientName}</span>
+              </div>
+            )}
+          </div>
+        )}
         <div style={styles.card} className="fade-in">
           {submitted ? (
             <ThankYou consultant={employeeName} onReset={reset} />

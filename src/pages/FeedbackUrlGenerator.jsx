@@ -41,7 +41,7 @@ export default function FeedbackUrlGenerator() {
         ...new Map(
           empProjects.map((r) => [
             r.projectName,
-            { guid: r.projectGuid, name: r.projectName },
+            { guid: r.projectGuid, name: r.projectName, clientName: r.clientName },
           ]),
         ).values(),
       ].sort((a, b) => a.name.localeCompare(b.name)),
@@ -109,6 +109,11 @@ export default function FeedbackUrlGenerator() {
     return e;
   };
 
+  const selectedProject = useMemo(
+    () => projectOptions.find((p) => p.name === projectName),
+    [projectOptions, projectName],
+  );
+
   // Handle Generate URL
   const handleGenerate = async () => {
     setToast("");
@@ -127,6 +132,7 @@ export default function FeedbackUrlGenerator() {
       const response = await saveLink({
         employeeName,
         projectName,
+        clientName: selectedProject?.clientName ?? null,
         reviewerName,
         periodLabel,
       });
