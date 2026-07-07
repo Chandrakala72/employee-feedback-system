@@ -4,7 +4,7 @@ import { styles } from "../styles/FeedbackURLGeneratorStyles";
 import "../styles/FeedbackURLGenerate.css";
 import { saveLink, listLinks, deactivateLink } from "../services/feedbackApi";
 import { constants, MONTHS } from "../global/constants";
-import { getPeriodLabel, generateUrl } from "../global/helper";
+import { getPeriodLabel, generateUrl, isToBeforeFrom } from "../global/helper";
 import { useNavigate } from "react-router-dom";
 import { PeriodRow } from "../components/PeriodRow";
 import { fetchEmployeeProjects } from "../services/employeeApi";
@@ -77,6 +77,17 @@ export default function FeedbackUrlGenerator() {
       .finally(() => setLoadingEmpProjects(false));
   }, []);
 
+  useEffect(() => {
+    if (isToBeforeFrom(fromMonth, fromYear, toMonth, toYear)) {
+      setErrors((prev) => ({
+        ...prev,
+        period: "To period must be later than From period",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, period: "" }));
+    }
+  }, [fromMonth, fromYear, toMonth, toYear]);
+
   // handle delete functionality
   async function handleDelete(id) {
     try {
@@ -92,6 +103,9 @@ export default function FeedbackUrlGenerator() {
     if (!reviewerName.trim()) e.reviewerName = "Reviewer name is required";
     if (!employeeName.trim()) e.employeeName = "Employee name is required";
     if (!projectName.trim()) e.projectName = "Project name is required";
+    if (isToBeforeFrom(fromMonth, fromYear, toMonth, toYear)) {
+      e.period = "To period must be later than From period";
+    }
     return e;
   };
 
@@ -373,11 +387,12 @@ export default function FeedbackUrlGenerator() {
                   />
                 </div>
 
-                {/* ── Period validation error ── */}
-                {errors.period && (
-                  <span style={styles.errorMsg}>{errors.period}</span>
-                )}
               </div>
+
+              {/* ── Period validation error ── */}
+              {errors.period && (
+                <span style={styles.errorMsg}>{errors.period}</span>
+              )}
             </div>
             <div style={styles.divider} />
             <button

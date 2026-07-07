@@ -61,3 +61,10 @@ export function getPeriodLabel(month, year) {
 export function generateUrl(name) {
   return `${window.location.origin}/feedback/${btoa(name.trim())}`;
 }
+
+export function isToBeforeFrom(fromM, fromY, toM, toY) {
+  if (!fromM || !fromY || !toM || !toY) return false; // don't validate incomplete input here
+  const fromDate = Number(fromY) * 12 + Number(fromM);
+  const toDate = Number(toY) * 12 + Number(toM);
+  return toDate < fromDate;
+}

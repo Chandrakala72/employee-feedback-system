@@ -223,7 +223,7 @@ export const styles = {
   },
   divider: {
     height: "0.5px",
-    backgroundColor: "#edf0f7",
+    backgroundColor: "transparent",
     margin: "0px 0",
   },
   generateBtn: {
