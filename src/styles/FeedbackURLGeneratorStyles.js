@@ -376,6 +376,7 @@ export const styles = {
     fontSize: "12px",
     color: "#c0392b",
     marginTop: "2px",
+    textAlign: "left",
   },
   toast: {
     position: "fixed",

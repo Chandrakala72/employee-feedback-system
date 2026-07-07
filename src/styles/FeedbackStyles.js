@@ -56,6 +56,7 @@ export const styles = {
     marginTop: 5,
     paddingTop: 5,
     borderTop: "0.5px solid #c7cbdb",
+    justifyContent: 'space-between'
   },
 
   metaReviewer: {

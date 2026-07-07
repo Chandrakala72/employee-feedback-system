@@ -178,7 +178,7 @@ export default function FeedbackForm({ onSubmit }) {
               <div style={styles.metaReviewer}>
                 <span style={styles.metaAvatar}>{reviewer[0]}</span>
                 <span style={styles.metaText}>
-                  Reviewed by <span style={styles.metaStrong}>{reviewer}</span>
+                  Review by <span style={styles.metaStrong}>{reviewer}</span>
                 </span>
               </div>
             )}
