@@ -101,29 +101,39 @@ export default function FeedbackDashboard() {
 
   /* ── Filtered + sorted ──────────────────────────────────────────────── */
   const filtered = useMemo(() => {
-    let rows = responses;
-    if (empFilter) rows = rows.filter((r) => r.employee_name === empFilter);
-    if (projectFilter)
-      rows = rows.filter((r) => r.project_name === projectFilter);
-    if (periodFilter)
-      rows = rows.filter((r) => r.period_label === periodFilter);
+  let rows = responses;
 
-    return [...rows].sort((a, b) => {
-      let av = a[sortKey],
-        bv = b[sortKey];
-      if (av == null) av = sortDir === "asc" ? Infinity : -Infinity;
-      if (bv == null) bv = sortDir === "asc" ? Infinity : -Infinity;
-      if (typeof av === "string") av = av.toLowerCase();
-      if (typeof bv === "string") bv = bv.toLowerCase();
-      return sortDir === "asc" ? (av > bv ? 1 : -1) : av < bv ? 1 : -1;
-    });
-  }, [responses, empFilter, projectFilter, periodFilter, sortKey, sortDir]);
+  if (Array.isArray(empFilter) && empFilter.length > 0) {
+    const empNames = employees
+      .filter((e) => empFilter.includes(e.value))
+      .map((e) => e.name);
+    rows = rows.filter((r) => empNames.includes(r.employee_name));
+  }
+
+  if (projectFilter)
+    rows = rows.filter((r) => r.project_name === projectFilter);
+  if (periodFilter)
+    rows = rows.filter((r) => r.period_label === periodFilter);
+
+  return [...rows].sort((a, b) => {
+    let av = a[sortKey],
+      bv = b[sortKey];
+    if (av == null) av = sortDir === "asc" ? Infinity : -Infinity;
+    if (bv == null) bv = sortDir === "asc" ? Infinity : -Infinity;
+    if (typeof av === "string") av = av.toLowerCase();
+    if (typeof bv === "string") bv = bv.toLowerCase();
+    return sortDir === "asc" ? (av > bv ? 1 : -1) : av < bv ? 1 : -1;
+  });
+}, [responses, empFilter, projectFilter, periodFilter, sortKey, sortDir]);
 
   /* ── Pagination ─────────────────────────────────────────────────────── */
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
-  const hasFilters = empFilter || projectFilter || periodFilter;
+  const hasFilters =
+    (Array.isArray(empFilter) ? empFilter.length > 0 : empFilter !== "") ||
+    projectFilter !== "" ||
+    periodFilter !== "";
 
   function toggleSort(key) {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -239,7 +249,6 @@ export default function FeedbackDashboard() {
                 value: empFilter,
                 setter: ((val) => {
                   setEmpFilter(val);
-                  setErrors((prev) => ({ ...prev, employeeName: "" }));
                 }),
                 options: employees,
                 ph: !projectFilter ? "Select project first" : "All employees",
