@@ -3,7 +3,7 @@ import myLogo from "../assets/logo.png";
 import { ratingColor } from "../global/common";
 import { Avatar } from "../components/Avatar";
 import { RatingChip } from "../components/RatingChip";
-import { BASE, C_Dashboard, constants } from "../global/constants";
+import { C_Dashboard, constants } from "../global/constants";
 import { EmptyState } from "../components/EmptyState";
 import { ResponseDetail } from "../components/ResponseDetail";
 import { ResponseCard } from "../components/ResponseListCard";

@@ -1,4 +1,4 @@
-import { BASE } from "../global/constants";
+import { API_URL } from "../global/constants";
 
 // services/feedbackApi.js — example pattern, apply to saveLink, listLinks, deactivateLink
 function authHeaders() {
@@ -11,7 +11,7 @@ function authHeaders() {
 
 async function request(path, options = {}, { auth = true } = {}) {
   const token = localStorage.getItem("authToken");
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",

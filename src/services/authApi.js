@@ -1,7 +1,7 @@
-import { BASE } from "../global/constants";
+import { API_URL } from "../global/constants";
 
 export async function login(username, password) {
-  const res = await fetch(`${BASE}/api/auth/login`, {
+  const res = await fetch(`${API_URL}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
