@@ -222,6 +222,7 @@ const styles = {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        alignItems:"center",
         padding: "48px 56px",
         color: "#fff",
         position: "relative",
