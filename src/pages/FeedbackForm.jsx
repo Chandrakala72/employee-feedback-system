@@ -34,6 +34,7 @@ export default function FeedbackForm({ onSubmit }) {
   const ratingsRef = useRef(null);
   const ratedCount = Object.values(ratings).filter(Boolean).length;
   const overallValid = !!ratings.overall;
+  const [toast, setToast] = useState(null);
 
   // ── Load link metadata on mount ───────────────────────────────────────────
   useEffect(() => {
@@ -57,6 +58,12 @@ export default function FeedbackForm({ onSubmit }) {
         setLoading(false);
       });
   }, [linkId]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 4000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   // ── Submit handler ────────────────────────────────────────────────────────
   async function submit() {
@@ -113,6 +120,8 @@ export default function FeedbackForm({ onSubmit }) {
     };
 
     try {
+      // ── Save to local DB ─────────────────────────────────────────────────
+      await submitFeedback(payload);
 
       await sendFeedbackEmail({
         employeeName,
@@ -122,8 +131,6 @@ export default function FeedbackForm({ onSubmit }) {
         goingWell: wins.trim() || null,
         couldImprove: improve.trim() || null,
       });
-      // ── Save to local DB ─────────────────────────────────────────────────
-      await submitFeedback(payload);
 
       // ── Optional: also call the parent onSubmit (e.g. for local state) ──
       if (typeof onSubmit === "function") {
@@ -135,8 +142,10 @@ export default function FeedbackForm({ onSubmit }) {
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      setSubmitError(err.message || constants.apiError);
-    } finally {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setToast(err);
+    }
+    finally {
       setSubmitting(false);
     }
   }
@@ -190,6 +199,28 @@ export default function FeedbackForm({ onSubmit }) {
   return (
     <div style={styles.shell}>
       {/* Logo */}
+      {toast && (
+        <div
+          style={{
+            position: "fixed",
+            top: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: toast.type === "info" ? "#1f2937" : C.ink,
+            color: "#fff",
+            padding: "12px 20px",
+            borderRadius: 8,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            zIndex: 1000,
+            minWidth: 420,
+            maxWidth: 800,
+            textAlign: "center",
+            fontSize: 14,
+          }}
+        >
+          {toast.message}
+        </div>
+      )}
       <div style={{ display: "flex", flexDirection: "row", margin: 0 }}>
         <div>
           <img src={myLogo} alt="Company Logo" width={120} />
