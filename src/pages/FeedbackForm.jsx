@@ -7,9 +7,10 @@ import { SectionLabel } from "../components/SectionLabel";
 import { Field } from "../components/Field";
 import { C, constants, DIMENSIONS } from "../global/constants";
 import { Divider } from "../components/Divider";
-import { submitFeedback, fetchLink } from "../services/feedbackApi";
+import { submitFeedback, fetchLink, sendFeedbackEmail } from "../services/feedbackApi";
 import myLogo from "../assets/logo.png";
 import "../styles/FeedbackForm.css";
+import axios from "axios";
 
 export default function FeedbackForm({ onSubmit }) {
   const [submitted, setSubmitted] = useState(false);
@@ -71,22 +72,56 @@ export default function FeedbackForm({ onSubmit }) {
     setSubmitting(true);
     setSubmitError("");
 
+    const questionLabels = {
+      technical: "Technical Skills",
+      communication: "Communication Skills",
+      reliability: "Reliability",
+      collaboration: "Collaboration",
+      overall: "Overall Rating",
+    };
+
+    const ratingsPayload = {
+      technical: ratings.technical ?? null,
+      communication: ratings.communication ?? null,
+      reliability: ratings.reliability ?? null,
+      collaboration: ratings.collaboration ?? null,
+      overall: ratings.overall, // required
+    };
+
+    const questionsArray = Object.entries(ratingsPayload).map(([key, rating]) => ({
+      question: questionLabels[key] ?? key,
+      rating: rating ?? 0,
+    }));
+
+
     const payload = {
       linkId,
       reviewerName: reviewer.trim() || null,
       clientName: clientName.trim() || null,
-      ratings: {
-        technical: ratings.technical ?? null,
-        communication: ratings.communication ?? null,
-        reliability: ratings.reliability ?? null,
-        collaboration: ratings.collaboration ?? null,
-        overall: ratings.overall, // required
-      },
+      ratings: ratingsPayload,
       goingWell: wins.trim() || null,
       couldImprove: improve.trim() || null,
     };
 
+    const emailPayload = {
+      name: employeeName,
+      responses: {
+        questions: questionsArray,
+        goingWell: wins.trim() || null,
+        couldImprove: improve.trim() || null,
+      },
+    };
+
     try {
+
+      await sendFeedbackEmail({
+        employeeName,
+        reviewerName: reviewer.trim() || null,
+        clientName: clientName.trim() || null,
+        ratings: ratingsPayload,
+        goingWell: wins.trim() || null,
+        couldImprove: improve.trim() || null,
+      });
       // ── Save to local DB ─────────────────────────────────────────────────
       await submitFeedback(payload);
 

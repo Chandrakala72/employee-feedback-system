@@ -1,3 +1,4 @@
+import axios from "axios";
 import { API_URL } from "../global/constants";
 
 // services/feedbackApi.js — example pattern, apply to saveLink, listLinks, deactivateLink
@@ -128,4 +129,15 @@ export async function fetchSummary(linkId) {
   return request(`/api/responses/summary/${encodeURIComponent(linkId)}`, {
     headers: authHeaders(),
   });
+}
+
+export async function sendFeedbackEmail(payload) {
+  return request(
+    "/api/feedback/send-email",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    { auth: false },
+  );
 }
