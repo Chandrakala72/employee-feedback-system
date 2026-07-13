@@ -245,7 +245,8 @@ const styles = {
         fontWeight: 600,
         margin: "0 0 16px",
         letterSpacing: "-0.02em",
-        textAlign: "center"
+        textAlign: "center",
+        color: "#121212"
     },
     brandSub: {
         fontSize: 15,

@@ -278,6 +278,7 @@ export const styles = {
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
+    justifyContent:"center",
     gap: "5px",
     padding: "0 10px",
     transition: "background-color 0.15s",

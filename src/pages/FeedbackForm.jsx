@@ -200,7 +200,7 @@ export default function FeedbackForm({ onSubmit }) {
 
               {/* Ratings */}
               <div ref={ratingsRef}>
-                <SectionLabel n="1" title="Ratings" caption="" />
+                <SectionLabel n="1" title="Ratings" caption="Your scores help us track quality over time" />
                 <div style={styles.ratingList}>
                   {DIMENSIONS.map((d, i) => (
                     <RatingRow

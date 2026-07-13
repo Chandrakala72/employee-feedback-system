@@ -56,7 +56,7 @@ export const styles = {
     marginTop: 5,
     paddingTop: 5,
     borderTop: "0.5px solid #c7cbdb",
-    justifyContent: 'space-between'
+    justifyContent: "space-between",
   },
 
   metaReviewer: {
@@ -139,6 +139,7 @@ export const styles = {
     fontWeight: 700,
     margin: "0 0 6px",
     letterSpacing: -0.3,
+    color: "#121212",
   },
 
   sub: {
@@ -249,6 +250,7 @@ export const styles = {
     fontSize: 10.5,
     marginTop: 6,
     fontWeight: 500,
+    textAlign: 'left'
   },
 
   // Rating Styles
@@ -279,6 +281,7 @@ export const styles = {
     fontSize: 11.5,
     color: "#737c8c",
     marginTop: 2,
+    textAlign: "left",
   },
 
   // Descriptor Styles
