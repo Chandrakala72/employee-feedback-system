@@ -5,7 +5,7 @@ import { C } from "../global/constants";
 export const styles = {
   // General Styles
   shell: {
-    minHeight: "100%",
+    minHeight: "100vh",
     background:
       "radial-gradient(1200px 500px at 50% -10%, #dce6f0 0%, #edf1f7 55%)",
     padding: "10px 16px 56px",
