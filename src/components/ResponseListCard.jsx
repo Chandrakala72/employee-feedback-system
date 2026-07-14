@@ -17,7 +17,7 @@ export function ResponseCard({ row, onClick }) {
     { label: "Tech", v: row.rating_technical },
     { label: "Comm", v: row.rating_communication },
     { label: "Rel.", v: row.rating_reliability },
-    { label: "Collab", v: row.rating_collaboration },
+    { label: "Solv.", v: row.rating_solving },
   ];
 
   return (

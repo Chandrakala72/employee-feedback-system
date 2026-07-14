@@ -48,21 +48,22 @@ export const ResponseDetail = ({ row, onClose }) => {
 
   const date = row.submitted_at
     ? new Date(row.submitted_at).toLocaleString(undefined, {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
     : "—";
 
   // Ratings array for the modal
   const ratings = [
-    { label: "Overall", value: row.rating_overall },
     { label: "Technical", value: row.rating_technical },
     { label: "Communication", value: row.rating_communication },
     { label: "Reliability", value: row.rating_reliability },
+    { label: "Solving", value: row.rating_solving },
     { label: "Collaboration", value: row.rating_collaboration },
+    { label: "Overall", value: row.rating_overall },
   ];
 
   return (

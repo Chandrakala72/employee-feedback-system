@@ -83,6 +83,7 @@ export default function FeedbackForm({ onSubmit }) {
       technical: "Technical Skills",
       communication: "Communication Skills",
       reliability: "Reliability",
+      solving:"Solving",
       collaboration: "Collaboration",
       overall: "Overall Rating",
     };
@@ -92,6 +93,7 @@ export default function FeedbackForm({ onSubmit }) {
       communication: ratings.communication ?? null,
       reliability: ratings.reliability ?? null,
       collaboration: ratings.collaboration ?? null,
+      solving: ratings.problemSolving ?? null,
       overall: ratings.overall, // required
     };
 
