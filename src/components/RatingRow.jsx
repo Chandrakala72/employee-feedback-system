@@ -71,7 +71,7 @@ export const RatingRow = ({ dim, value, onChange, last, showError }) => {
       </div>
       {/* Error Message */}
       {showError && (
-        <div style={styles.fieldError}>Please give an overall score</div>
+        <div style={styles.fieldError}>Please rate {dim.label.toLowerCase()}</div>
       )}
     </div>
   );

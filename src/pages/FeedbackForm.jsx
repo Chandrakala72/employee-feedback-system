@@ -33,7 +33,6 @@ export default function FeedbackForm({ onSubmit }) {
   const [clientName, setClientName] = useState("");
   const ratingsRef = useRef(null);
   const ratedCount = Object.values(ratings).filter(Boolean).length;
-  const overallValid = !!ratings.overall;
   const [toast, setToast] = useState(null);
 
   // ── Load link metadata on mount ───────────────────────────────────────────
@@ -67,7 +66,8 @@ export default function FeedbackForm({ onSubmit }) {
 
   // ── Submit handler ────────────────────────────────────────────────────────
   async function submit() {
-    if (!overallValid) {
+    const missingRequired = DIMENSIONS.some((d) => d.required && !ratings[d.key]);
+    if (missingRequired) {
       setTouched(true);
       ratingsRef.current?.scrollIntoView({
         behavior: "smooth",
