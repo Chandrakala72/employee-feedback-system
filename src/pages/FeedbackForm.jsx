@@ -128,6 +128,7 @@ export default function FeedbackForm({ onSubmit }) {
       await sendFeedbackEmail({
         employeeName,
         reviewerName: reviewer.trim() || null,
+        periodLabel: period,
         clientName: clientName.trim() || null,
         ratings: ratingsPayload,
         goingWell: wins.trim() || null,
