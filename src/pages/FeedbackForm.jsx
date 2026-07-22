@@ -83,7 +83,7 @@ export default function FeedbackForm({ onSubmit }) {
       technical: "Technical Skills",
       communication: "Communication Skills",
       reliability: "Reliability",
-      solving:"Solving",
+      solving:"Problem Solving",
       collaboration: "Collaboration",
       overall: "Overall Rating",
     };

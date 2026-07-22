@@ -61,7 +61,7 @@ export const ResponseDetail = ({ row, onClose }) => {
     { label: "Technical", value: row.rating_technical },
     { label: "Communication", value: row.rating_communication },
     { label: "Reliability", value: row.rating_reliability },
-    { label: "Solving", value: row.rating_solving },
+    { label: "Problem Solving", value: row.rating_solving },
     { label: "Collaboration", value: row.rating_collaboration },
     { label: "Overall", value: row.rating_overall },
   ];
