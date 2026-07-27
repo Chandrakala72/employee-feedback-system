@@ -3,7 +3,7 @@ import myLogo from "../assets/logo.png";
 import { styles } from "../styles/FeedbackURLGeneratorStyles";
 import "../styles/FeedbackURLGenerate.css";
 import { saveLink, listLinks, deactivateLink } from "../services/feedbackApi";
-import { constants, MONTHS } from "../global/constants";
+import { constants, MONTHS, TITLE_OPTIONS } from "../global/constants";
 import { getPeriodLabel, generateUrl, isToBeforeFrom } from "../global/helper";
 import { useNavigate } from "react-router-dom";
 import { PeriodRow } from "../components/PeriodRow";
@@ -17,6 +17,7 @@ const currentYear = currentDate.getFullYear();
 export default function FeedbackUrlGenerator() {
   const navigate = useNavigate();
   const [reviewerName, setReviewerName] = useState("");
+  const [reviewerTitle, setReviewerTitle] = useState("");
   const [projectName, setProjectName] = useState("");
   const [employeeName, setEmployeeName] = useState("");
   const [generatedUrl, setGeneratedUrl] = useState("");
@@ -129,11 +130,14 @@ export default function FeedbackUrlGenerator() {
       setGenerating(true);
 
       const periodLabel = `${getPeriodLabel(fromMonth, fromYear)} - ${getPeriodLabel(toMonth, toYear)}`;
+      const fullReviewerName = [reviewerTitle, reviewerName.trim()]
+        .filter(Boolean)
+        .join(" ");
       const response = await saveLink({
         employeeName,
         projectName,
         clientName: selectedProject?.clientName ?? null,
-        reviewerName,
+        reviewerName: fullReviewerName,
         periodLabel,
       });
 
@@ -195,6 +199,7 @@ export default function FeedbackUrlGenerator() {
   //Handle Add New URL
 
   const handleAddNew = () => {
+    setReviewerTitle("");
     setReviewerName("");
     setProjectName("");
     setEmployeeName("");
@@ -278,21 +283,38 @@ export default function FeedbackUrlGenerator() {
           <div style={styles.formBody}>
             <div style={styles.fieldGroup}>
               <label style={styles.label}>{constants.reviewerName}</label>
-              <input
-                style={inputStyle("reviewerName")}
-                type="text"
-                placeholder="Enter Reviewer Name"
-                value={reviewerName}
-                onChange={(e) => {
-                  setReviewerName(e.target.value);
-                  setErrors((prev) => ({ ...prev, reviewerName: "" }));
-                }}
-                onFocus={() => setFocusField("reviewerName")}
-                onBlur={() => setFocusField(null)}
-              />
-              {errors.reviewerName && (
-                <span style={styles.errorMsg}>{errors.reviewerName}</span>
-              )}
+              <div style={{ display: "flex", gap: 8 }}>
+                <select
+                  value={reviewerTitle}
+                  onChange={(e) => setReviewerTitle(e.target.value)}
+                  style={{ ...selectStyle("reviewerTitle"), flex: "0 0 96px" }}
+                  onFocus={() => setFocusField("reviewerTitle")}
+                  onBlur={() => setFocusField(null)}
+                  aria-label="Title (optional)"
+                >
+                  <option value="">Title</option>
+                  {TITLE_OPTIONS.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  style={inputStyle("reviewerName")}
+                  type="text"
+                  placeholder="Enter Reviewer Name"
+                  value={reviewerName}
+                  onChange={(e) => {
+                    setReviewerName(e.target.value);
+                    setErrors((prev) => ({ ...prev, reviewerName: "" }));
+                  }}
+                  onFocus={() => setFocusField("reviewerName")}
+                  onBlur={() => setFocusField(null)}
+                />
+                {errors.reviewerName && (
+                  <span style={styles.errorMsg}>{errors.reviewerName}</span>
+                )}
+              </div>
             </div>
 
             <div

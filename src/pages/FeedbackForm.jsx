@@ -83,7 +83,7 @@ export default function FeedbackForm({ onSubmit }) {
       technical: "Technical Skills",
       communication: "Communication Skills",
       reliability: "Reliability",
-      solving:"Problem Solving",
+      solving: "Problem Solving",
       collaboration: "Collaboration",
       overall: "Overall Rating",
     };
@@ -199,6 +199,21 @@ export default function FeedbackForm({ onSubmit }) {
   const employeeName = linkMeta?.employee_name ?? "…";
   const period = linkMeta?.period_label ?? "";
 
+  function getInitial(name = "") {
+    const trimmed = name.trim();
+    if (!trimmed) return "";
+
+    const parts = trimmed.split(/\s+/); // split on whitespace, not "."
+    const titleLike = /^(mr|mrs|ms|dr|mx|prof)\.?$/i;
+
+    // if the first word is a title, use the next word's first letter
+    const nameStart = titleLike.test(parts[0]) && parts.length > 1
+      ? parts[1]
+      : parts[0];
+
+    return nameStart[0].toUpperCase();
+  }
+
   return (
     <div style={styles.shell}>
       {/* Logo */}
@@ -245,7 +260,7 @@ export default function FeedbackForm({ onSubmit }) {
           <div style={styles.metaRow}>
             {reviewer && (
               <div style={styles.metaReviewer}>
-                <span style={styles.metaAvatar}>{reviewer[0]}</span>
+                <span style={styles.metaAvatar}>{getInitial(reviewer)}</span>
                 <span style={styles.metaText}>
                   Review by <span style={styles.metaStrong}>{reviewer}</span>
                 </span>

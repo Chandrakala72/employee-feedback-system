@@ -95,6 +95,8 @@ export const C_Dashboard = {
 // Scale descriptors for the ratings
 export const SCALE = ["Poor", "Fair", "Good", "Very good", "Excellent"];
 
+export const TITLE_OPTIONS = ["Mr.", "Ms.", "Mrs.", "Dr.", "Mx."];
+
 export const MONTHS = [
   "January",
   "February",
