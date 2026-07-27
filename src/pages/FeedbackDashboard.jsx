@@ -101,30 +101,30 @@ export default function FeedbackDashboard() {
 
   /* ── Filtered + sorted ──────────────────────────────────────────────── */
   const filtered = useMemo(() => {
-  let rows = responses;
+    let rows = responses;
 
-  if (Array.isArray(empFilter) && empFilter.length > 0) {
-    const empNames = employees
-      .filter((e) => empFilter.includes(e.value))
-      .map((e) => e.name);
-    rows = rows.filter((r) => empNames.includes(r.employee_name));
-  }
+    if (Array.isArray(empFilter) && empFilter.length > 0) {
+      const empNames = employees
+        .filter((e) => empFilter.includes(e.value))
+        .map((e) => e.name);
+      rows = rows.filter((r) => empNames.includes(r.employee_name));
+    }
 
-  if (projectFilter)
-    rows = rows.filter((r) => r.project_name === projectFilter);
-  if (periodFilter)
-    rows = rows.filter((r) => r.period_label === periodFilter);
+    if (projectFilter)
+      rows = rows.filter((r) => r.project_name === projectFilter);
+    if (periodFilter)
+      rows = rows.filter((r) => r.period_label === periodFilter);
 
-  return [...rows].sort((a, b) => {
-    let av = a[sortKey],
-      bv = b[sortKey];
-    if (av == null) av = sortDir === "asc" ? Infinity : -Infinity;
-    if (bv == null) bv = sortDir === "asc" ? Infinity : -Infinity;
-    if (typeof av === "string") av = av.toLowerCase();
-    if (typeof bv === "string") bv = bv.toLowerCase();
-    return sortDir === "asc" ? (av > bv ? 1 : -1) : av < bv ? 1 : -1;
-  });
-}, [responses, empFilter, projectFilter, periodFilter, sortKey, sortDir]);
+    return [...rows].sort((a, b) => {
+      let av = a[sortKey],
+        bv = b[sortKey];
+      if (av == null) av = sortDir === "asc" ? Infinity : -Infinity;
+      if (bv == null) bv = sortDir === "asc" ? Infinity : -Infinity;
+      if (typeof av === "string") av = av.toLowerCase();
+      if (typeof bv === "string") bv = bv.toLowerCase();
+      return sortDir === "asc" ? (av > bv ? 1 : -1) : av < bv ? 1 : -1;
+    });
+  }, [responses, empFilter, projectFilter, periodFilter, sortKey, sortDir]);
 
   /* ── Pagination ─────────────────────────────────────────────────────── */
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
@@ -283,11 +283,14 @@ export default function FeedbackDashboard() {
           <div style={styles.errorContainer}>
             <p style={styles.errorText}>⚠️ {error}</p>
           </div>
+        ) : !hasFilters ? (
+          <div style={styles.emptyStateContainer}>
+            <EmptyState filtered={false} message="Select a filter above to view responses" />
+          </div>
         ) : filtered.length === 0 ? (
           <div style={styles.emptyStateContainer}>
             <EmptyState filtered={!!hasFilters} />
-          </div>
-        ) : (
+          </div>) : (
           <>
             <div style={styles.cardsGrid} className="cards-grid">
               {paginated.map((row) => (
