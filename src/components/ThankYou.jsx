@@ -1,7 +1,7 @@
 import { styles } from "../styles/FeedbackStyles";
 
 // ThankYou component for displaying a thank you message after feedback submission
-export const ThankYou = ({ consultant, onReset }) => {
+export const ThankYou = ({ consultant, reviewerName, onReset }) => {
   return (
     <div style={styles.thankWrap}>
       <div style={styles.check} className="pop-in">
@@ -15,14 +15,33 @@ export const ThankYou = ({ consultant, onReset }) => {
           />
         </svg>
       </div>
+
       <h1 style={{ ...styles.title, textAlign: "center", marginTop: 4 }}>
-        Thank you
+        Thank you{reviewerName ? `, ${reviewerName.split(" ")[0]}` : ""}
       </h1>
+
       <p style={{ ...styles.sub, textAlign: "center", maxWidth: 360 }}>
-        Your response for {consultant ? ` on ${consultant.split(" ")[0]}` : ""}{" "}
-        has been recorded. It helps us continuously improve and maintain the
-        quality of our work.
+        {consultant
+          ? `Your feedback for ${consultant} has been submitted successfully.`
+          : "Your response has been recorded."}
+        <br />
+        Thank you for taking the time to share your feedback.
+        <br />
+        Your valuable input helps us continuously improve the quality of our work.
       </p>
+
+      {reviewerName && (
+        <p
+          style={{
+            fontSize: 12,
+            color: "var(--text-secondary, #8a8a86)",
+            marginTop: 10,
+            textAlign: "center",
+          }}
+        >
+          Submitted by {reviewerName}
+        </p>
+      )}
     </div>
   );
 };
