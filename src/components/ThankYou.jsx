@@ -17,12 +17,12 @@ export const ThankYou = ({ consultant, reviewerName, onReset }) => {
       </div>
 
       <h1 style={{ ...styles.title, textAlign: "center", marginTop: 4 }}>
-        Thank you{reviewerName ? `, ${reviewerName.split(" ")[0]}` : ""}
+        Thank you{reviewerName ? `, ${reviewerName.split(" ")[0]}!` : ""}
       </h1>
 
       <p style={{ ...styles.sub, textAlign: "center", maxWidth: 360 }}>
         {consultant
-          ? `Your feedback for ${consultant} has been submitted successfully.`
+          ? (<>`Your feedback for <b>{consultant}</b> has been submitted successfully.`</>)
           : "Your response has been recorded."}
         <br />
         Thank you for taking the time to share your feedback.
