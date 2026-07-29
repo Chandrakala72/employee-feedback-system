@@ -28,7 +28,7 @@ export default function FeedbackDashboard() {
   // Filters
   const [empFilter, setEmpFilter] = useState([]);
   const [projectFilter, setProjectFilter] = useState("");
-  const [periodFilter, setPeriodFilter] = useState("");
+  const [periodFilter, setPeriodFilter] = useState([]);
   const [sortKey, setSortKey] = useState("submitted_at");
   const [sortDir, setSortDir] = useState("desc");
   const [page, setPage] = useState(1);
@@ -58,6 +58,7 @@ export default function FeedbackDashboard() {
 
   useEffect(() => {
     setEmpFilter([]);
+    setPeriodFilter([]);
     setPage(1);
   }, [projectFilter]);
 
@@ -112,8 +113,8 @@ export default function FeedbackDashboard() {
 
     if (projectFilter)
       rows = rows.filter((r) => r.project_name === projectFilter);
-    if (periodFilter)
-      rows = rows.filter((r) => r.period_label === periodFilter);
+    if (Array.isArray(periodFilter) && periodFilter.length > 0)
+      rows = rows.filter((r) => periodFilter.includes(r.period_label));
 
     return [...rows].sort((a, b) => {
       let av = a[sortKey],
@@ -133,7 +134,12 @@ export default function FeedbackDashboard() {
   const hasFilters =
     (Array.isArray(empFilter) ? empFilter.length > 0 : empFilter !== "") ||
     projectFilter !== "" ||
-    periodFilter !== "";
+    (Array.isArray(periodFilter) ? periodFilter.length > 0 : periodFilter !== "");
+
+  const allFiltersSelected =
+    projectFilter !== "" &&
+    Array.isArray(empFilter) && empFilter.length > 0 &&
+    Array.isArray(periodFilter) && periodFilter.length > 0;
 
   function toggleSort(key) {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -224,7 +230,7 @@ export default function FeedbackDashboard() {
                   onClick={() => {
                     setEmpFilter([]);
                     setProjectFilter("");
-                    setPeriodFilter("");
+                    setPeriodFilter([]);
                     setPage(1);
                   }}
                   style={styles.clearBtn}
@@ -257,7 +263,7 @@ export default function FeedbackDashboard() {
               {
                 label: "Period",
                 value: periodFilter,
-                setter: setPeriodFilter,
+                setter: (val) => setPeriodFilter(val),
                 options: periods,
                 ph: "All periods",
               },
@@ -270,7 +276,7 @@ export default function FeedbackDashboard() {
                   options={options}
                   placeholder={ph}
                   disabled={label === "Employee" && !projectFilter}
-                  multiple={label === "Employee" && projectFilter}
+                  multiple={label === "Employee" || label === "Period"}
                 />
               </div>
             ))}
@@ -283,9 +289,9 @@ export default function FeedbackDashboard() {
           <div style={styles.errorContainer}>
             <p style={styles.errorText}>⚠️ {error}</p>
           </div>
-        ) : !hasFilters ? (
+        ) : !allFiltersSelected  ? (
           <div style={styles.emptyStateContainer}>
-            <EmptyState filtered={false} message="Select a filter above to view responses" />
+            <EmptyState filtered={false} message="Select all the filter above to view responses" />
           </div>
         ) : filtered.length === 0 ? (
           <div style={styles.emptyStateContainer}>
