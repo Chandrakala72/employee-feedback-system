@@ -275,7 +275,7 @@ export default function FeedbackForm({ onSubmit }) {
           </div>
         )}
         <div style={styles.card} className="fade-in">
-          {true ? (
+          {submitted ? (
             <ThankYou consultant={employeeName} reviewerName={reviewer} onReset={reset} />
           ) : (
             <>

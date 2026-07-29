@@ -17,7 +17,7 @@ export const ThankYou = ({ consultant, reviewerName, onReset }) => {
       </div>
 
       <h1 style={{ ...styles.title, textAlign: "center", marginTop: 4 }}>
-        Thank you{reviewerName ? `, ${reviewerName.split(" ")[0]}!` : ""}
+        Thank you{reviewerName ? ` ${reviewerName}` : ""}!
       </h1>
 
       <p style={{ ...styles.sub, textAlign: "center", maxWidth: 360 }}>
@@ -29,19 +29,6 @@ export const ThankYou = ({ consultant, reviewerName, onReset }) => {
         <br />
         Your valuable input helps us continuously improve the quality of our work.
       </p>
-
-      {reviewerName && (
-        <p
-          style={{
-            fontSize: 12,
-            color: "var(--text-secondary, #8a8a86)",
-            marginTop: 10,
-            textAlign: "center",
-          }}
-        >
-          Submitted by {reviewerName}
-        </p>
-      )}
     </div>
   );
 };
