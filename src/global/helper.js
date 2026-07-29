@@ -63,7 +63,10 @@ export function generateUrl(name) {
 }
 
 export function isToBeforeFrom(fromM, fromY, toM, toY) {
-  if (!fromM || !fromY || !toM || !toY) return false; // don't validate incomplete input here
+ const isEmpty = (v) => v === undefined || v === null || v === "";
+  if (isEmpty(fromM) || isEmpty(fromY) || isEmpty(toM) || isEmpty(toY)) {
+    return false; // don't validate incomplete input here
+  } // don't validate incomplete input here
   const fromDate = Number(fromY) * 12 + Number(fromM);
   const toDate = Number(toY) * 12 + Number(toM);
   return toDate < fromDate;
